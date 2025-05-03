@@ -3,6 +3,7 @@
 Flask
 flask_login
 Flask-WTF
+flask-jwt-extended
 marshmallow
 marshmallow-sqlalchemy
 
@@ -10,6 +11,7 @@ marshmallow-sqlalchemy
 sqlalchemy
 flask-sqlalchemy
 flask-marshmallow
+flask-migrate
 pyodbc
 
 # incripición dependencias
@@ -17,11 +19,6 @@ Werkzeug
 email-validator
 cryptography.fernet
 cryptography
-
-# iapi dependencias
-deepseek-ai
-requests
-python-dotenv
 
 # Testing dependencias
 pytest 
