@@ -57,7 +57,7 @@ def get_user_applications(user_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@applications_bp.route('/applications/job/<int:job_id>', methods['GET'])
+@applications_bp.route('/applications/job/<int:job_id>', methods=['GET'])
 def get_job_applications(job_id):
     try:
         applications = ApplicationService.get_applications_by_job(job_id)
