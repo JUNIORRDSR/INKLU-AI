@@ -1,4 +1,7 @@
 # este archivo contiene las dependencias necesarias para el proyecto
+# depetencias de desarrollo
+python-dotenv
+
 # flask dependencias
 Flask
 flask_login
