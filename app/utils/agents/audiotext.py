@@ -6,6 +6,7 @@ from langchain.chat_models import init_chat_model
 from langchain_core.tools import tool
 import speech_recognition as sr
 from dotenv import load_dotenv
+import os
 load_dotenv()
 
 llm_orquestador = init_chat_model(
@@ -16,11 +17,13 @@ llm_orquestador = init_chat_model(
 llm_por_voz = init_chat_model(
     model="gemini-2.0-flash",
     model_provider="google_genai",
+    api_key=os.getenv("GOOGLE_API_KEY"),
 )
 
 llm_respondedor = init_chat_model(
     model="gemini-2.0-flash",
     model_provider="google_genai",
+    api_key=os.getenv("GOOGLE_API_KEY"),
 )
 
 @tool
