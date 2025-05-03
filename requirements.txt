@@ -26,3 +26,11 @@ python-dotenv
 # Testing dependencias
 pytest 
 pytest-cov
+
+# Dependencias de ia
+langchain
+langgraph
+langchain-deepseek
+langchain-google-genai
+SpeechRecognition
+PyAudio
