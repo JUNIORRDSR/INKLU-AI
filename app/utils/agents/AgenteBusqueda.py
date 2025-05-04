@@ -178,9 +178,30 @@ Sigue estos pasos:
 # 4. Función principal para realizar búsquedas
 
 def buscar_oportunidades(consulta):
-    """Función principal para buscar oportunidades laborales inclusivas
-        Args:
-            consulta (str): Consulta de búsqueda del usuario
+    """
+    Realiza búsquedas de oportunidades laborales para personas con discapacidad utilizando APIs y modelos de IA.
+
+    Esta función coordina el proceso de búsqueda de empleos inclusivos mediante:
+    1. Verificación de configuración de APIs necesarias (Google Search y DeepSeek)
+    2. Procesamiento de la consulta del usuario a través de un agente de IA
+    3. Búsqueda en múltiples fuentes (boards de empresas y resultados web)
+    4. Presentación de resultados con formato amigable y emojis
+
+    Args:
+        consulta (str): Texto con la consulta del usuario que puede incluir:
+            - Tipo de discapacidad
+            - Ubicación deseada
+            - Empresas específicas
+            - Tipo de trabajo o sector
+
+    Raises:
+        Exception: Si hay errores de conectividad o problemas con las APIs.
+            Se manejan los errores mostrando sugerencias de solución.
+
+    Notas:
+        - Opera en modo demostración si las APIs no están configuradas
+        - Utiliza emojis para mejorar la legibilidad de los resultados
+        - Incluye sugerencias de empresas con programas de inclusión
     """
     print(f"\n🔍 Buscando: {consulta}\n")
     message = HumanMessage(content=consulta)
