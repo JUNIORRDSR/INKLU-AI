@@ -5,4 +5,4 @@ class ApplicationSchema(Schema):
     IdUsuario = fields.Int(attribute="IdUsuario", required=True)
     IdVacante = fields.Int(attribute="IdVacante", required=True)
     FechaPostulacion = fields.DateTime(attribute="FechaPostulacion", dump_only=True)
-    Estado = fields.Str(attribute="Estado", default='Pendiente')
+    Estado = fields.Str(attribute="Estado", load_default='Pendiente')

@@ -18,10 +18,9 @@ def create_app(config_name='development'):
     ma.init_app(app)
     login_manager.init_app(app)
     
-    # Importar y registrar blueprints de manera más modular
-    from app.routes import blueprints
-    for blueprint in blueprints:
-        app.register_blueprint(blueprint)
+    # Importar y registrar blueprints con prefijos usando la función existente
+    from app.routes import register_blueprints
+    register_blueprints(app)
     
     # Registrar manejadores de errores personalizados
     register_error_handlers(app)
