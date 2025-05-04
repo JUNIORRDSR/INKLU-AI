@@ -5,7 +5,6 @@ from flask_jwt_extended import jwt_required
 courses_bp = Blueprint('courses', __name__)
 
 @courses_bp.route('/courses', methods=['POST'])
-@jwt_required()
 def create_course():
     try:
         data = request.get_json()
@@ -33,7 +32,6 @@ def get_course(course_id):
         return jsonify({"error": str(e)}), 500
 
 @courses_bp.route('/courses/<int:course_id>', methods=['PUT'])
-@jwt_required()
 def update_course(course_id):
     try:
         data = request.get_json()
@@ -45,7 +43,6 @@ def update_course(course_id):
         return jsonify({"error": str(e)}), 400
 
 @courses_bp.route('/courses/<int:course_id>', methods=['DELETE'])
-@jwt_required()
 def delete_course(course_id):
     try:
         success = CourseService.delete_course(course_id)

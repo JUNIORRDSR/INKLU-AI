@@ -23,5 +23,3 @@ class Indicator(db.Model):
 
     def __repr__(self):
         return f'<Indicator {self.Tipo}: {self.Valor}>'
-
-    user = db.relationship('User', backref='indicadores')

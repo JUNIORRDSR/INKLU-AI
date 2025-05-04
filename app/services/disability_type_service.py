@@ -72,3 +72,22 @@ class DisabilityTypeService:
         disability_types = DisabilityType.query.all()
         disability_type_schema = DisabilityTypeSchema(many=True)
         return disability_type_schema.dump(disability_types)
+
+    @staticmethod
+    def get_disability_types_by_name(name):
+        try:
+            # Realizamos una búsqueda case-insensitive que contenga el texto
+            # El % funciona como comodín en las consultas SQL LIKE
+            disability_types = DisabilityType.query.filter(
+                DisabilityType.Nombre.ilike(f'%{name}%')
+            ).all()
+            
+            if not disability_types:
+                return []
+                
+            disability_type_schema = DisabilityTypeSchema(many=True)
+            return disability_type_schema.dump(disability_types)
+        except Exception as e:
+            # Registrar el error pero devolver lista vacía para que la API maneje el error de manera controlada
+            print(f"Error al buscar tipos de discapacidad por nombre: {str(e)}")
+            return []

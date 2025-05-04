@@ -15,7 +15,6 @@ def create_user():
         return jsonify({"error": str(e)}), 400
 
 @users_bp.route('/users/<int:user_id>', methods=['GET'])
-@jwt_required()
 def get_user(user_id):
     try:
         user = UserService.get_user(user_id)

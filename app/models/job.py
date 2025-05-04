@@ -13,9 +13,6 @@ class Job(db.Model):
     _Requisitos = db.Column('Requisitos', db.Text, nullable=True)
     FechaPublicacion = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relaciones
-    postulaciones = db.relationship('Application', backref='vacante')
-    
     # Propiedades híbridas para datos sensibles
     @hybrid_property
     def Descripcion(self):

@@ -11,9 +11,6 @@ class Course(db.Model):
     Accesibilidad = db.Column(db.String(100), nullable=True)
     _URLContenido = db.Column('URLContenido', db.String(255), nullable=True)
     
-    # Relaciones
-    inscripciones = db.relationship('Enrollment', backref='curso')
-    
     # Propiedades híbridas para datos sensibles
     @hybrid_property
     def Descripcion(self):

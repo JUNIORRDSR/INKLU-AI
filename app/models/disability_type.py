@@ -7,8 +7,6 @@ class DisabilityType(db.Model):
     Nombre = db.Column(db.String(100), nullable=False)
     Descripcion = db.Column(db.String(255))
     
-    # Relaciones
-    usuarios = db.relationship('User', backref='tipo_discapacidad')
 
     def __repr__(self):
         return f'<DisabilityType {self.Nombre}>'

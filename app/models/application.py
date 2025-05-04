@@ -10,8 +10,6 @@ class Application(db.Model):
     FechaPostulacion = db.Column(db.DateTime, default=datetime.utcnow)
     Estado = db.Column(db.String(50), default='Pendiente')
 
-    usuario = db.relationship('User', backref='postulaciones')
-    vacante = db.relationship('Job', backref='postulaciones')
     
     def __repr__(self):
         return f'<Application {self.IdPostulacion} - Estado: {self.Estado}>'

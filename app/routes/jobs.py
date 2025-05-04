@@ -5,7 +5,6 @@ from flask_jwt_extended import jwt_required
 jobs_bp = Blueprint('jobs', __name__)
 
 @jobs_bp.route('/jobs', methods=['POST'])
-@jwt_required()
 def create_job():
     try:
         json_data = request.get_json()
@@ -33,7 +32,6 @@ def get_job(job_id):
         return jsonify({"error": str(e)}), 500
 
 @jobs_bp.route('/jobs/<int:job_id>', methods=['PUT'])
-@jwt_required()
 def update_job(job_id):
     try:
         json_data = request.get_json()
@@ -45,7 +43,6 @@ def update_job(job_id):
         return jsonify({"error": str(e)}), 400
 
 @jobs_bp.route('/jobs/<int:job_id>', methods=['DELETE'])
-@jwt_required()
 def delete_job(job_id):
     try:
         success = JobService.delete_job(job_id)

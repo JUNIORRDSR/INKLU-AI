@@ -5,7 +5,6 @@ from flask_jwt_extended import jwt_required
 indicators_bp = Blueprint('indicators', __name__)
 
 @indicators_bp.route('/indicators', methods=['POST'])
-@jwt_required()
 def create_indicator():
     try:
         json_data = request.get_json()
@@ -33,7 +32,6 @@ def get_indicator(id):
         return jsonify({'error': str(e)}), 500
 
 @indicators_bp.route('/indicators/<int:id>', methods=['PUT'])
-@jwt_required()
 def update_indicator(id):
     try:
         json_data = request.get_json()
@@ -45,7 +43,6 @@ def update_indicator(id):
         return jsonify({'error': str(e)}), 400
 
 @indicators_bp.route('/indicators/<int:id>', methods=['DELETE'])
-@jwt_required()
 def delete_indicator(id):
     try:
         success = IndicatorService.delete_indicator(id)

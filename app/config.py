@@ -11,13 +11,7 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=1)
     
     # Configuración de la base de datos para SQL Server
-    SQLALCHEMY_DATABASE_URI = (
-        f"mssql+pyodbc://{os.environ.get('SQLSERVER_USER')}:"
-        f"{os.environ.get('SQLSERVER_PASSWORD')}@"
-        f"{os.environ.get('SQLSERVER_HOST')}/"
-        f"{os.environ.get('SQLSERVER_DATABASE')}?"
-        f"driver=ODBC+Driver+17+for+SQL+Server"
-    )
+    SQLALCHEMY_DATABASE_URI = 'mssql+pyodbc://junior2:junior200801@JUNIOR_PC/inkludb?driver=ODBC+Driver+17+for+SQL+Server'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Clave de encriptación para los datos sensibles

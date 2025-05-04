@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss(),],
   
   // Configuración para desarrollo - proxy para API requests
   server: {
@@ -20,9 +21,9 @@ export default defineConfig({
   
   // Configuración para producción - output a folder estático de Flask
   build: {
-    outDir: '../app/static/react',
+    outDir: 'dist',
     emptyOutDir: true,
-    sourcemap: false,
+    sourcemap: true,
     assetsDir: 'assets',
     // Asegura que las rutas sean relativas
     assetsInlineLimit: 0,
@@ -31,11 +32,12 @@ export default defineConfig({
         manualChunks: undefined,
       },
     },
+    chunkSizeWarningLimit: 1000
   },
   
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': '/src',
     },
   },
 })

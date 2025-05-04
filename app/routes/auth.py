@@ -37,7 +37,6 @@ def login():
         return jsonify({"error": str(e)}), 500
 
 @auth_bp.route('/me', methods=['GET'])
-@jwt_required()
 def get_current_user():
     try:
         user_id = get_jwt_identity()
@@ -49,7 +48,6 @@ def get_current_user():
         return jsonify({"error": str(e)}), 500
 
 @auth_bp.route('/logout', methods=['POST'])
-@jwt_required()
 def logout():
     # Con JWT, el logout se maneja del lado del cliente eliminando el token
     return jsonify({"message": "Sesión cerrada correctamente"}), 200

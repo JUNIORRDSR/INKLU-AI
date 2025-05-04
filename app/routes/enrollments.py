@@ -5,7 +5,6 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 enrollments_bp = Blueprint('enrollments', __name__)
 
 @enrollments_bp.route('/enrollments', methods=['POST'])
-@jwt_required()
 def create_enrollment():
     try:
         data = request.get_json()
@@ -27,7 +26,6 @@ def get_enrollment(course_id, user_id):
         return jsonify({"error": str(e)}), 500
 
 @enrollments_bp.route('/enrollments/course/<int:course_id>/user/<int:user_id>', methods=['DELETE'])
-@jwt_required()
 def delete_enrollment(course_id, user_id):
     try:
         success = EnrollmentService.delete_enrollment(course_id, user_id)
@@ -54,7 +52,6 @@ def get_course_enrollments(course_id):
         return jsonify({"error": str(e)}), 500
 
 @enrollments_bp.route('/enrollments', methods=['GET'])
-@jwt_required()
 def get_all_enrollments():
     try:
         enrollments = EnrollmentService.get_all_enrollments()
