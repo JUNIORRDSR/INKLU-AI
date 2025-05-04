@@ -392,5 +392,57 @@ No respondas nada mas aparte del html, Puedes usar el siguiente ejemplo como bas
     pdfkit.from_string(cv_html, output_dir, configuration=config)
 
 if __name__ == "__main__":
+    
+    ejemplo_cv = """
+Nombre completo: Juan Pérez
+Edad: 28 años
+Género: Masculino
+Tipo de discapacidad: Auditiva
+Ubicación: Bogotá, Colombia
+Correo electrónico: juanperez@email.com
+Teléfono: +57 300 123 4567
+
+Perfil profesional:
+Soy una persona proactiva, responsable y con gran capacidad de adaptación. Me especializo en atención al cliente y tengo experiencia trabajando en entornos inclusivos. Busco oportunidades laborales que valoren la diversidad y la inclusión.
+
+Formación académica:
+
+Técnico en Sistemas - SENA - Finalizado en 2022
+
+Bachiller Académico - Colegio Distrital San Martín - 2018
+
+Experiencia laboral:
+Asistente de soporte técnico - Empresa XYZ - 2022 a 2023
+
+Atención a usuarios con problemas técnicos
+
+Mantenimiento básico de equipos
+
+Registro y seguimiento de incidentes
+
+Cajero - Supermercado ABC - 2019 a 2021
+
+Manejo de caja y atención al cliente
+
+Control de inventario básico
+
+Trabajo en equipo con personal diverso
+
+Habilidades:
+
+Dominio básico de herramientas ofimáticas
+
+Comunicación escrita clara
+
+Trabajo en equipo
+
+Atención al detalle
+
+Idiomas:
+
+Español (nativo)
+
+Lengua de señas colombiana (LSC) - nivel intermedio"""
+    cv = ""
     creador_pdf()
 #     # Ejecutar la función principal o cualquier otra lógica aquí
