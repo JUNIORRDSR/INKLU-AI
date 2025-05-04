@@ -33,8 +33,12 @@ langchain
 langgraph
 langchain-deepseek
 langchain-google-genai
+langchain-community
 SpeechRecognition
 PyAudio
+pyttsx3
 pdfkit
+google-search-results
+shadai
 ##cambiar salidas de texto print V[0] a print(V[0])
 wkhtmltopdf
