@@ -41,8 +41,14 @@ def audio_texto() -> str:
                 SystemMessage(content="Eres un asistente de voz que recibe el audio del usuario en formato de texto y arreglas los posibles errores gramaticales y de sintaxis que se generen en el proceso de conversion."),
                 HumanMessage(content=text)
             ])
-            response = respondedor(response)
-            return response
+            # Extraer solo el contenido del mensaje generado por llm_por_voz
+            print(f"Tipo de response: {type(response)}")
+            print("Texto corregido:", response.content) # Asumiendo que 'content' es el atributo correcto
+            response = llm_respondedor.invoke([
+                SystemMessage(content="Eres un asistente de voz que responde a las preguntas del usuario."),
+                HumanMessage(content=response.content)
+            ])
+            return response.content
         except Exception as e:
             return  print("Error:", e)
 
@@ -70,3 +76,5 @@ for step in agent.stream(
 ):
     # Imprime el mensaje completo para depuración   
     step["messages"][-1].pretty_print()
+
+
