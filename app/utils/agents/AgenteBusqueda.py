@@ -79,7 +79,7 @@ def google_search_empleos(query: str) -> str:
     modified_query = f"{query} empleo discapacidad inclusivo"
     
     # Verificar que las claves de API estén configuradas
-    google_api_key = os.getenv("GOOGLE_API_KEY")
+    google_api_key = "AIzaSyA0-lCzH3pPTsDzlsmcl6UdGrvEh83dtfE"
     google_cse_id = os.getenv("GOOGLE_CSE_ID")
     
     if not google_api_key or not google_cse_id:
