@@ -208,8 +208,26 @@ for step in agente.stream(
     step["messages"][-1].pretty_print()
 
 print(f"CV generado: {cv}")
+html = """  
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Documento</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>Hola Mundo</h1>
+    <p>Este es un ejemplo de contenido HTML válido para convertir a PDF.</p>
+</body>
+</html>
+"""
+
 cv_html = ll_deepseek.invoke([
-    SystemMessage(content="""Convierte el siguiente texto que contiene información personal para un currículum vitae en un documento HTML con un diseño visual atractivo de dos columnas. La columna izquierda debe contener los datos de contacto, habilidades y educación, y la columna derecha debe contener una breve descripción personal ("Acerca de mí") y la experiencia laboral.
+    SystemMessage(content=f"""Convierte el siguiente texto que contiene información personal para un currículum vitae en un documento HTML con un diseño visual atractivo de dos columnas. La columna izquierda debe contener los datos de contacto, habilidades y educación, y la columna derecha debe contener una breve descripción personal ("Acerca de mí") y la experiencia laboral.
 
 Utiliza estilos CSS modernos y asegúrate de:
 
@@ -221,8 +239,27 @@ Presentar el nombre completo en grande, con la profesión debajo.
 
 Mostrar íconos o separar con líneas cada sección.
 
-No usar imágenes (la IA solo generará HTML)."""),
+No usar imágenes (la IA solo generará HTML).
+                  
+                  Quiero que generes una cadena de HTML limpia y válida, que pueda convertirse correctamente a PDF con librerías como pdfkit o WeasyPrint.
+
+📌 Requisitos del HTML:
+
+Debe comenzar con <!DOCTYPE html> y tener correctamente estructurados los elementos <html>, <head>, y <body>.
+
+Debe tener codificación UTF-8 (<meta charset="UTF-8">).
+
+Incluye una hoja de estilos básica dentro de <style> en el <head>, sin enlaces externos.
+
+No debe contener rutas a imágenes o recursos externos (como fuentes o scripts remotos).
+
+Todo el contenido debe estar contenido en una sola cadena multilínea de Python, usando triple comillas
+
+No uses caracteres de escape innecesarios (\n, \\, \", etc.). El HTML debe ser copiado tal cual, sin procesar.
+
+El contenido puede ser una estructura de currículum (CV), factura, carta, etc., según el contexto.
+                  puedes seguir el siguiente ejemplo de HTML para crear un CV: {html}"""),
     HumanMessage(content=cv)
-])
+    ,])
 print(f"CV HTML: {cv_html}")
 pdfkit.from_string(cv_html, 'cv.pdf')
