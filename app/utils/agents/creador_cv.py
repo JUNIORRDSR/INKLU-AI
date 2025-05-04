@@ -5,8 +5,9 @@ from langgraph.prebuilt import create_react_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.tools import tool
 from dotenv import load_dotenv
-import os
+from wkhtmltopdf.main import WKhtmlToPdf
 import pdfkit
+import os
 load_dotenv()
 
 ll_deepseek = init_chat_model(
@@ -133,7 +134,14 @@ def crear_cv(datos: str) -> str:
     print(f"CV generado: {cv}")
     return response.content
 
-ejemplo_cv = """
+
+if __name__ == "__main__":
+    # Ejecutar la función principal o cualquier otra lógica aquí
+    ruta= r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+    config = pdfkit.configuration(wkhtmltopdf=ruta)
+    output_dir = os.path.join(os.path.dirname(__file__), "..", "..", "..", "Hojas de vida/cv.pdf")
+    
+    ejemplo_cv = """
 Nombre completo: Juan Pérez
 Edad: 28 años
 Género: Masculino
@@ -184,82 +192,201 @@ Español (nativo)
 
 Lengua de señas colombiana (LSC) - nivel intermedio"""
 
-cv = ""
+    cv = ""
 
-agente = create_react_agent(
-    orquestador,
-    tools=[estractor_datos],
-    prompt=SystemMessage(content="""Eres un asistente que analiza las entradas del usuario para detectar si contienen información personal útil para construir una hoja de vida, como nombre, edad, tipo de discapacidad, estudios, experiencia laboral, habilidades o idiomas.
+    agente = create_react_agent(
+        orquestador,
+        tools=[estractor_datos],
+        prompt=SystemMessage(content="""Eres un asistente que analiza las entradas del usuario para detectar si contienen información personal útil para construir una hoja de vida, como nombre, edad, tipo de discapacidad, estudios, experiencia laboral, habilidades o idiomas.
 
-Si el mensaje del usuario incluye datos personales o información relevante sobre su perfil, debes activar la herramienta encargada de extraer estos datos (tool_extractor_de_datos).
+    Si el mensaje del usuario incluye datos personales o información relevante sobre su perfil, debes activar la herramienta encargada de extraer estos datos (tool_extractor_de_datos).
 
-Si el mensaje no contiene información personal útil, responde amablemente que solo puedes ayudar cuando el usuario proporcione datos relacionados con su hoja de vida.
+    Si el mensaje no contiene información personal útil, responde amablemente que solo puedes ayudar cuando el usuario proporcione datos relacionados con su hoja de vida.
 
-No extraigas los datos tú mismo, solo determina si se deben pasar a la herramienta de extracción."""),
-)
+    No extraigas los datos tú mismo, solo determina si se deben pasar a la herramienta de extracción."""),
+    )
 
-message = HumanMessage(content="Hola, me llamo Juan Pérez, tengo 28 años y una discapacidad auditiva. Actualmente vivo en Bogotá y estoy buscando oportunidades laborales inclusivas. Mi correo es j@uni.co y tengo experiencia como auxiliar administrativo. También hablo español y algo de lengua de señas colombiana.")
+    input_text = "Hola, me llamo Juan Pérez, tengo 28 años y una discapacidad auditiva. Actualmente vivo en Bogotá y estoy buscando oportunidades laborales inclusivas. Mi correo es j@uni.co y tengo experiencia como auxiliar administrativo. También hablo español y algo de lengua de señas colombiana."
+    ## Ejemplo de datos ideales
+    message = HumanMessage(content=input_text)
 
-for step in agente.stream(
-    {"messages": message},  # Usa el mensaje formateado correctamente
-    stream_mode="values",
-):
-    # Imprime el mensaje completo para depuración   
-    step["messages"][-1].pretty_print()
+    for step in agente.stream(
+        {"messages": message},  # Usa el mensaje formateado correctamente
+        stream_mode="values",
+    ):
+        # Imprime el mensaje completo para depuración   
+        step["messages"][-1].pretty_print()
 
-print(f"CV generado: {cv}")
-html = """  
+    print(f"CV generado: {cv}")
+    html = """  
+    <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Currículum Vitae</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .left-column {
+            width: 30%;
+            background-color: #153C62;
+            color: white;
+            padding: 20px;
+        }
+        .right-column {
+            width: 70%;
+            padding: 40px;
+            background-color: white;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+        h2 {
+            font-size: 18px;
+            color: #153C62;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .info-label {
+            font-weight: bold;
+        }
+        .left-column h2 {
+            color: #fff;
+            border-color: #fff;
+        }
+        ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-column">
+            <h2>Contacto</h2>
+            <p><span class="info-label">Email:</span> zara@mail.com</p>
+            <p><span class="info-label">Tel:</span> +57 300 000 0000</p>
+
+            <h2>Habilidades</h2>
+            <ul>
+                <li>Comunicación</li>
+                <li>Trabajo en equipo</li>
+                <li>Adaptabilidad</li>
+            </ul>
+
+            <h2>Educación</h2>
+            <p>Universidad Ejemplo</p>
+            <p>Ingeniería de Sistemas</p>
+            <p>2018 - 2022</p>
+        </div>
+        <div class="right-column">
+            <h1>Zara Pérez</h1>
+            <h2>Desarrolladora Full Stack</h2>
+
+            <div class="section">
+                <h2>Acerca de mí</h2>
+                <p>Soy una profesional apasionada por la tecnología, con experiencia en el desarrollo de soluciones web y un enfoque orientado al detalle.</p>
+            </div>
+
+            <div class="section">
+                <h2>Experiencia Laboral</h2>
+                <p><strong>Desarrolladora Web - Tech Solutions</strong> (2023 - Presente)</p>
+                <ul>
+                    <li>Desarrollo de aplicaciones con React y Node.js.</li>
+                    <li>Implementación de buenas prácticas de desarrollo.</li>
+                </ul>
+                <p><strong>Practicante - SoftDev</strong> (2022)</p>
+                <ul>
+                    <li>Soporte en tareas de backend con Python y Flask.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Información Adicional</h2>
+                <p>Disponible para trabajar de forma remota o presencial. Alto nivel de compromiso y ética profesional.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+    """
+
+    cv_html = ll_deepseek.invoke([
+        SystemMessage(content=rf"""Convierte el siguiente texto con información personal en un documento HTML para un currículum vitae con un diseño de dos columnas **y responde únicamente con la cadena HTML**, sin ningún texto adicional.
+
+🔷 Estructura del diseño:
+- **Columna izquierda (cinta vertical):** datos de contacto, habilidades y educación.
+- **Columna derecha:** nombre completo, breve descripción personal (“Acerca de mí”), experiencia laboral e información adicional útil.
+
+🎨 Estilo visual:
+- Tipografía clara (Arial o sans‑serif).
+- Paleta de colores basada en azul oscuro (#153C62) y blanco.
+- Nombre completo en grande, profesión debajo.
+- Separadores limpios (líneas o títulos) para cada sección.
+- No incluir imágenes ni recursos externos.
+
+📄 Requisitos técnicos:
+- Debe comenzar con `<!DOCTYPE html>` y contener `<html>`, `<head>` y `<body>`.
+- Incluir `<meta charset="UTF-8">` en el `<head>`.
+- Hoja de estilos dentro de `<style>` en el `<head>`, sin enlaces externos.
+- Todo el contenido en una **cadena multilínea de Python** usando triple comillas (`""""""`).
+- **No usar** `\n`, `\\`, `\"` u otros caracteres de escape.
+- Diseño adaptado a A4/carta y listo para PDF con `pdfkit` o `WeasyPrint`.
+
+Ejemplo de uso:
+```python
+html = \"\"\"
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi Documento</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h1 { color: #2c3e50; }
-    </style>
+    <title>Currículum</title>
+    <style> /* estilos aquí */ </style>
 </head>
 <body>
-    <h1>Hola Mundo</h1>
-    <p>Este es un ejemplo de contenido HTML válido para convertir a PDF.</p>
+    <!-- tu contenido en dos columnas -->
 </body>
 </html>
-"""
+\"\"\"
 
-cv_html = ll_deepseek.invoke([
-    SystemMessage(content=f"""Convierte el siguiente texto que contiene información personal para un currículum vitae en un documento HTML con un diseño visual atractivo de dos columnas. La columna izquierda debe contener los datos de contacto, habilidades y educación, y la columna derecha debe contener una breve descripción personal ("Acerca de mí") y la experiencia laboral.
+📌 Recuerda:
+- No uses rutas externas ni imágenes.
+- El diseño debe adaptarse correctamente a formato carta o A4.
+- Debes mantener un balance visual entre ambas columnas.
 
-Utiliza estilos CSS modernos y asegúrate de:
+No respondas nada mas aparte del html, Puedes usar el siguiente ejemplo como base para construir la estructura:  
+`{html}`
+"""),
+        HumanMessage(content=cv)
+    ])
 
-Usar tipografía clara como Arial o sans-serif.
+    # Función para limpiar saltos de línea
+    def limpiar_saltos_linea(texto):
+        """
+        Reemplaza todos los saltos de línea por espacios en blanco
+        Args:
+            texto (str): Texto a limpiar
+        Returns:
+            str: Texto sin saltos de línea
+        """
+        return texto.replace('\n', ' ')
 
-Incluir colores similares al ejemplo: tonos azulados y blancos.
+    # Aplicar la limpieza al cv_html
+    cv_html = limpiar_saltos_linea(cv_html.content)
 
-Presentar el nombre completo en grande, con la profesión debajo.
-
-Mostrar íconos o separar con líneas cada sección.
-
-No usar imágenes (la IA solo generará HTML).
-                  
-                  Quiero que generes una cadena de HTML limpia y válida, que pueda convertirse correctamente a PDF con librerías como pdfkit o WeasyPrint.
-
-📌 Requisitos del HTML:
-
-Debe comenzar con <!DOCTYPE html> y tener correctamente estructurados los elementos <html>, <head>, y <body>.
-
-Debe tener codificación UTF-8 (<meta charset="UTF-8">).
-
-Incluye una hoja de estilos básica dentro de <style> en el <head>, sin enlaces externos.
-
-No debe contener rutas a imágenes o recursos externos (como fuentes o scripts remotos).
-
-Todo el contenido debe estar contenido en una sola cadena multilínea de Python, usando triple comillas
-
-No uses caracteres de escape innecesarios (\n, \\, \", etc.). El HTML debe ser copiado tal cual, sin procesar.
-
-El contenido puede ser una estructura de currículum (CV), factura, carta, etc., según el contexto.
-                  puedes seguir el siguiente ejemplo de HTML para crear un CV: {html}"""),
-    HumanMessage(content=cv)
-    ,])
-print(f"CV HTML: {cv_html}")
-pdfkit.from_string(cv_html, 'cv.pdf')
+    print(f"CV HTML: {cv_html}")
+    pdfkit.from_string(cv_html, output_dir, configuration=config)
