@@ -35,3 +35,4 @@ langchain-google-genai
 SpeechRecognition
 PyAudio
 pdfkit
+wkhtmltopdf
