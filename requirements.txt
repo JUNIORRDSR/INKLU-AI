@@ -34,3 +34,4 @@ langchain-deepseek
 langchain-google-genai
 SpeechRecognition
 PyAudio
+pdfkit
