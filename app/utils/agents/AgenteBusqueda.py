@@ -176,7 +176,12 @@ Sigue estos pasos:
 )
 
 # 4. Función principal para realizar búsquedas
+
 def buscar_oportunidades(consulta):
+    """Función principal para buscar oportunidades laborales inclusivas
+        Args:
+            consulta (str): Consulta de búsqueda del usuario
+    """
     print(f"\n🔍 Buscando: {consulta}\n")
     message = HumanMessage(content=consulta)
     
