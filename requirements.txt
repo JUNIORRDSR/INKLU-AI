@@ -35,4 +35,5 @@ langchain-google-genai
 SpeechRecognition
 PyAudio
 pdfkit
+##cambiar salidas de texto print V[0] a print(V[0])
 wkhtmltopdf
