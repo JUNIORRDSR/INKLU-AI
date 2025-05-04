@@ -7,14 +7,15 @@ Flask
 flask_login
 Flask-WTF
 flask-jwt-extended
-marshmallow
-marshmallow-sqlalchemy
+flask-cors
 
 # base de datos dependencias
 sqlalchemy
 flask-sqlalchemy
 flask-marshmallow
 flask-migrate
+marshmallow
+marshmallow-sqlalchemy
 pyodbc
 
 # incripición dependencias
