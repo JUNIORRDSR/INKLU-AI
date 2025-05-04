@@ -136,7 +136,30 @@ def crear_cv(datos: str) -> str:
 
 
 def creador_pdf():
+    """
+    Crea un archivo PDF con un currículum vitae a partir de datos proporcionados.
+
+    Esta función realiza las siguientes operaciones:
+    1. Configura wkhtmltopdf para la conversión de HTML a PDF
+    2. Procesa los datos del usuario mediante un agente conversacional
+    3. Extrae información relevante del CV
+    4. Genera un documento HTML con diseño responsivo de dos columnas
+    5. Convierte el HTML a PDF y lo guarda en la carpeta 'Hojas de vida'
+
+    Requisitos:
+    - wkhtmltopdf instalado en el sistema
+    - Acceso a modelos de lenguaje (DeepSeek y Google Gemini)
+    - Permisos de escritura en el directorio de salida
+
+    Returns:
+        None: La función guarda el PDF directamente en el sistema de archivos
+
+    Raises:
+        OSError: Si no se encuentra wkhtmltopdf o hay problemas de permisos
+        Exception: Si hay errores en la generación del HTML o conversión a PDF
+    """
     # Ejecutar la función principal o cualquier otra lógica aquí
+
     ruta= r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
     config = pdfkit.configuration(wkhtmltopdf=ruta)
     output_dir = os.path.join(os.path.dirname(__file__), "..", "..", "..", "Hojas de vida/cv.pdf")

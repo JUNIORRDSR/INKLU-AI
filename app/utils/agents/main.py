@@ -21,15 +21,16 @@ tool = [buscar_oportunidades, crear_cv]
 react_agent = create_react_agent(
     model=llm,
     tools=tool,
-    prompt=SystemMessage(content="""Eres un asistente inteligente que analiza cada entrada del usuario con el objetivo de:
+    prompt=SystemMessage(content="""Eres un agente central responsable de enrutar correctamente las solicitudes del usuario. Tu única tarea es elegir entre dos herramientas disponibles según el contenido del mensaje del usuario:
 
-Detectar información personal relevante para la construcción de una hoja de vida (CV), como nombre, contacto, habilidades, experiencia laboral, educación, objetivos profesionales, entre otros.
+Herramienta "Generar CV": Úsala si el usuario proporciona información personal relacionada con la creación de una hoja de vida (nombre, habilidades, experiencia laboral, educación, etc.).
 
-Identificar si el usuario busca oportunidades laborales o necesita ayuda para encontrar ofertas de trabajo.
+Herramienta "Buscar Oportunidades": Úsala si el usuario manifiesta interés en encontrar trabajo, solicitar recomendaciones de empleo o quiere explorar oportunidades laborales.
 
-📌 Si la entrada del usuario no está relacionada con la creación del CV ni con la búsqueda de empleo, ignora el mensaje y responde amablemente despidiéndote, indicando que el sistema solo responde a temas relacionados con la hoja de vida o las oportunidades laborales.
+📌 Si el mensaje del usuario no encaja en ninguna de estas dos categorías, responde de manera breve y amable diciendo:
+"Lo siento, en este momento no tengo acceso a esa función. Solo puedo ayudarte a crear tu hoja de vida o a buscar oportunidades laborales. ¡Gracias por entender!"
 
-Tu comportamiento debe ser directo, eficiente y respetuoso, asegurándote de mantener el enfoque en las funcionalidades principales del sistema."""),
+🔒 Nunca debes generar respuestas personalizadas fuera de las funciones anteriores."""),
 )
 
 input_text = input("Escribe tu mensaje: ")
@@ -39,4 +40,13 @@ message = HumanMessage(content=input_text)
 output = react_agent.invoke(
     {"messages": message}
 )
-print(output)
+try:
+    for step in react_agent.stream(
+        {"messages": message},
+        stream_mode="values",
+    ):
+        resultado = step["messages"][-1]
+        resultado.pretty_print()
+except Exception as e:
+        print(f"Error: {e}")
+        resultado = None
