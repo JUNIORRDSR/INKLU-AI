@@ -21,9 +21,22 @@ tool = [buscar_oportunidades, crear_cv]
 react_agent = create_react_agent(
     model=llm,
     tools=tool,
-    prompt=SystemMessage(content="""Eres un asistente que analiza las entradas del usuario para detectar si contienen información personal útil para construir una hoja de vida o revisa si el usuario necesita buscar informacion sobre ."""),
+    prompt=SystemMessage(content="""Eres un asistente inteligente que analiza cada entrada del usuario con el objetivo de:
+
+Detectar información personal relevante para la construcción de una hoja de vida (CV), como nombre, contacto, habilidades, experiencia laboral, educación, objetivos profesionales, entre otros.
+
+Identificar si el usuario busca oportunidades laborales o necesita ayuda para encontrar ofertas de trabajo.
+
+📌 Si la entrada del usuario no está relacionada con la creación del CV ni con la búsqueda de empleo, ignora el mensaje y responde amablemente despidiéndote, indicando que el sistema solo responde a temas relacionados con la hoja de vida o las oportunidades laborales.
+
+Tu comportamiento debe ser directo, eficiente y respetuoso, asegurándote de mantener el enfoque en las funcionalidades principales del sistema."""),
 )
 
-input = "Quiero buscar oportunidades de trabajo en el área de IA. ¿Puedes ayudarme?"
-output = react_agent.invoke(input)
+input_text = input("Escribe tu mensaje: ")
+message = HumanMessage(content=input_text)
+
+# Invocar el agente con el formato correcto
+output = react_agent.invoke(
+    {"messages": message}
+)
 print(output)
