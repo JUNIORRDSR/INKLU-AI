@@ -6,6 +6,7 @@ from langchain.chat_models import init_chat_model
 from langchain_core.tools import tool
 from dotenv import load_dotenv
 from AgenteBusqueda import buscar_oportunidades
+import os
 load_dotenv()
 
 llm = init_chat_model(
