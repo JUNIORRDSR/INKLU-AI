@@ -135,7 +135,7 @@ def crear_cv(datos: str) -> str:
     return response.content
 
 
-if __name__ == "__main__":
+def creador_pdf():
     # Ejecutar la función principal o cualquier otra lógica aquí
     ruta= r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
     config = pdfkit.configuration(wkhtmltopdf=ruta)
@@ -390,3 +390,7 @@ No respondas nada mas aparte del html, Puedes usar el siguiente ejemplo como bas
 
     print(f"CV HTML: {cv_html}")
     pdfkit.from_string(cv_html, output_dir, configuration=config)
+
+if __name__ == "__main__":
+    creador_pdf()
+#     # Ejecutar la función principal o cualquier otra lógica aquí
