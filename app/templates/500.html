@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error del servidor</title>
+    <title>Error del Servidor - InklúAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/errorsStyles.css')}} ">
 </head>
 <body>
-    <div class="error-container">
-        <h1>500</h1>
-        <h2>Error interno del servidor</h2>
-        <p>Lo sentimos, ha encontrado un problema técnico. Nuestros ingenieros ya están trabajando para solucionarlo lo antes posible.</p>
+    <div class="container">
+        <div class="auth-card">
+            <div class="error-container">
+                <div class="error-code">500</div>
+                <div class="error-message">Error Interno del Servidor</div>
+                <div class="error-description">
+                    Lo sentimos, ha ocurrido un problema técnico. Nuestros ingenieros ya están trabajando para solucionarlo lo antes posible.
+                </div>
+                <a href="../index.html" class="auth-button primary">Volver al Inicio</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>

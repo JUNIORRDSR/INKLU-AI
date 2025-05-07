@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - InklúAI</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="logo">InklúAI</div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#" class="active">Panel de Control</a></li>
+                <li><a href="#">Perfil</a></li>
+                <li><a href="#">Configuración</a></li>
+            </ul>
+        </nav>
+        <div class="user-menu">
+            <div class="user-info">
+                <span id="userDisplayName">Usuario</span>
+                <button id="logoutButton" class="logout-button">Cerrar sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <div class="welcome-section">
+            <h1>Bienvenido a tu Panel de Control</h1>
+            <p>Has iniciado sesión correctamente en tu cuenta.</p>
+        </div>
+        
+        <div class="dashboard-cards">
+            <div class="dashboard-card">
+                <h2>Información de la Cuenta</h2>
+                <div class="card-content">
+                    <p><strong>Nombre de usuario:</strong> <span id="profileUsername">usuario</span></p>
+                    <p><strong>Correo electrónico:</strong> <span id="profileEmail">correo@ejemplo.com</span></p>
+                    <p><strong>Cuenta creada:</strong> <span id="profileCreated">1 de enero de 2023</span></p>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h2>Configuración de Seguridad</h2>
+                <div class="card-content">
+                    <p>Administra la configuración de seguridad de tu cuenta</p>
+                    <button class="auth-button secondary" onclick="window.location.href='reset-password-request.html'">Cambiar Contraseña</button>
+                    <button class="auth-button secondary" onclick="window.location.href='#'">Actualizar Correo</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Add chat button to dashboard
+    const dashboardCards = document.querySelector(".dashboard-cards");
+    if (dashboardCards) {
+      const chatCard = document.createElement("div");
+      chatCard.className = "dashboard-card";
+      chatCard.innerHTML = `
+        <h2>Asistente IA</h2>
+        <div class="card-content">
+          <p>Chatea con nuestro asistente de IA para obtener ayuda con cualquier pregunta que tengas.</p>
+          <button class="auth-button primary" onclick="window.location.href='chat.html'">Iniciar Chat</button>
+        </div>
+      `;
+      dashboardCards.appendChild(chatCard);
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+.error-container {
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.error-description {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}

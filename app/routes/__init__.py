@@ -12,6 +12,7 @@ from .applications import applications_bp
 from .courses import courses_bp
 from .indicators import indicators_bp
 from .enrollments import enrollments_bp
+from .viewpages import viewpages_bp
 
 # Register all blueprints
 def register_blueprints(app):
@@ -23,3 +24,4 @@ def register_blueprints(app):
     app.register_blueprint(courses_bp, url_prefix='/api')
     app.register_blueprint(indicators_bp, url_prefix='/api')
     app.register_blueprint(enrollments_bp, url_prefix='/api')
+    app.register_blueprint(viewpages_bp)

@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página no encontrada</title>
+    <title>Página No Encontrada - InklúAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/errorsStyles.css')}} ">
 </head>
 <body>
-    <div class="error-container">
-        <h1>404</h1>
-        <h2>¡Ups! Página no encontrada</h2>
-        <p>Lo sentimos, no puede encontrar la página que estás buscando. ¿Quieres volver al inicio para seguir utilizando tus servicios?</p>
+    <div class="container">
+        <div class="auth-card">
+            <div class="error-container">
+                <div class="error-code">404</div>
+                <div class="error-message">Página No Encontrada</div>
+                <div class="error-description">
+                    La página que estás buscando puede haber sido eliminada, su nombre ha cambiado o no está disponible temporalmente.
+                </div>
+                <a href="../index.html" class="auth-button primary">Volver al Inicio</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>
