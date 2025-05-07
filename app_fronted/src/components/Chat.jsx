@@ -17,6 +17,7 @@ function Chat() {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isRecording, setIsRecording] = useState(false); // Nuevo estado para grabación
   const messagesEndRef = useRef(null);
 
   // Sugerencias
@@ -78,6 +79,21 @@ function Chat() {
     simulateResponse(inputMessage);
   };
 
+  // Nueva función para simular grabación de voz
+  const handleVoiceRecord = () => {
+    setIsRecording(!isRecording);
+    
+    if (!isRecording) {
+      // Simulamos inicio de grabación
+      setTimeout(() => {
+        // Después de "grabar", simulamos un mensaje transcrito
+        const voiceMessage = "Necesito información sobre cómo hacer una hoja de vida";
+        setInputMessage(voiceMessage);
+        setIsRecording(false);
+      }, 2000); // Simular 2 segundos de grabación
+    }
+  };
+
   // Componente Header dentro del componente Chat
   const Header = () => {
     return (
@@ -91,6 +107,14 @@ function Chat() {
       </header>
     );
   };
+
+  // Icono de micrófono SVG
+  const MicrophoneIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+      <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+      <path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+    </svg>
+  );
 
   return (
     <div className={`chat-container ${darkMode ? 'dark' : 'light'}`}>
@@ -173,6 +197,16 @@ function Chat() {
                 placeholder="Escribe tu mensaje..."
                 className={`message-input ${darkMode ? 'dark' : 'light'}`}
               />
+              
+              {/* Botón de micrófono */}
+              <button 
+                onClick={handleVoiceRecord}
+                className={`voice-button ${isRecording ? 'recording' : ''}`}
+              >
+                <MicrophoneIcon />
+              </button>
+              
+              {/* Botón de enviar */}
               <button 
                 onClick={handleSendMessage}
                 className="send-button"
@@ -181,6 +215,14 @@ function Chat() {
                 Enviar
               </button>
             </div>
+            
+            {/* Indicador de grabación */}
+            {isRecording && (
+              <div className="recording-indicator">
+                <span className="recording-dot"></span>
+                <span>Grabando audio...</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
