@@ -1,5 +1,8 @@
 # INKLU-AI Flask Project
 
+## Nota 
+No usar dependecias de python 2
+
 ## Descripción
 Este proyecto es una aplicación web desarrollada con Flask que implementa un modelo ORM basado en la base de datos `inkludb`. La aplicación está diseñada para gestionar usuarios, tipos de discapacidad, vacantes de empleo, postulaciones, cursos y sus inscripciones, así como indicadores asociados a los usuarios.
 
