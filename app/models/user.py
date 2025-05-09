@@ -1,4 +1,4 @@
-from app.extensions import db
+from app.extensions import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
@@ -41,6 +41,24 @@ class User(db.Model, UserMixin):
     # Para Flask-Login
     def get_id(self):
         return str(self.IdUsuario)
+    
+    @property
+    def is_active(self):
+        # Define la lógica para determinar si el usuario está activo
+        return True
+    
+    @property
+    def is_authenticated(self):
+        return True
+    
+    @property
+    def is_anonymous(self):
+        return False
 
     def __repr__(self):
         return f'<User {self.NombreCompleto}>'
+
+# Esta función es necesaria para cargar usuarios desde la base de datos
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

@@ -8,6 +8,9 @@ load_dotenv()
 class Config:
     # Configuración básica de Flask
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
     PERMANENT_SESSION_LIFETIME = timedelta(days=1)
     
     # Configuración de la base de datos para SQL Server utilizando variables de entorno

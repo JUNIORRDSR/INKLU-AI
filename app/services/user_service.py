@@ -47,22 +47,38 @@ class UserService:
 
     @staticmethod
     def login_user(email, password):
-        """Autentica a un usuario y devuelve un token JWT si es exitoso"""
+        """Autentica a un usuario"""
         try:
-            user = User.query.filter_by(Correo=email).first()
+            # Obtener todos los usuarios y buscar por correo desencriptado
+            users = User.query.all()
+            user = None
+            
+            for u in users:
+                try:
+                    if u.Correo == email:  # Ahora esto usa la propiedad híbrida que desencripta
+                        user = u
+                        break
+                except Exception as e:
+                    print(f"Error al comparar correo: {str(e)}")
+                    continue
+                    
             if not user:
-                return {"error": "Correo no encontrado"}, None
+                return {"error": "Correo o contraseña incorrectos"}, None
+                
+            if not user.check_password(password):
+                return {"error": "Correo o contraseña incorrectos"}, None
+                
+            # Generar token JWT
+            access_token = create_access_token(identity=user.IdUsuario)
             
-            if not check_password_hash(user.Contrasena, password):
-                return {"error": "Contraseña incorrecta"}, None
-            
-            # Crear un token JWT con información del usuario
-            access_token = create_access_token(identity=user.id)
+            # Preparar datos de respuesta
             user_schema = UserSchema()
             user_data = user_schema.dump(user)
+                
             return {"message": "Login exitoso", "user": user_data}, access_token
         except Exception as e:
-            return {"error": str(e)}, None
+            print(f"Error en login_user: {str(e)}")
+            return {"error": f"Error en el servidor: {str(e)}"}, None
 
     @staticmethod
     def update_user(user_id, data):
