@@ -3,6 +3,8 @@
  */
 
 // Mock implementations (replace with actual implementations or imports)
+import {registerUser} from './apis/registerApi.js';
+
 const SessionManager = {
   isAuthenticated: () => false, // Replace with actual logic
   createSession: (user, rememberMe) => {
@@ -16,8 +18,23 @@ const UserStorage = {
     // Replace with actual user lookup logic
     return null
   },
-  addUser: (username, email, password) => {
+  addUser: async(username, email, password) => {
     // Replace with actual user creation logic
+    
+    const data = {
+        username:username,
+        email: email,
+        password:password
+      };
+      console.log(data)
+      // Call the loginUser function with the data object
+      try {
+        const response = await registerUser(data);
+        console.log(response);
+      } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+      }
+
     console.log("User added:", username, email, password)
     return { username, email } // Return a mock user object
   },
@@ -241,7 +258,7 @@ function setupSignupForm() {
 
       // Redirect to login page after a delay
       setTimeout(() => {
-        window.location.href = "login.html"
+        window.location.href = "login"
       }, 2000)
     } catch (error) {
       showNotification(error.message, "error")

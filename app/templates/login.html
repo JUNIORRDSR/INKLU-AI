@@ -52,7 +52,7 @@
                         <input type="checkbox" id="rememberMe" name="rememberMe">
                         <label for="rememberMe">Recordarme</label>
                     </div>
-                    <a href="reset-password-request.html" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                    <a href="reset-password-request" class="forgot-password">¿Olvidaste tu contraseña?</a>
                 </div>
                 
                 <button type="submit" class="auth-button primary">Iniciar Sesión</button>
@@ -63,13 +63,13 @@
             </form>
             
             <div class="auth-link">
-                <p>¿No tienes una cuenta? <a href="signup.html">Registrarse</a></p>
+                <p>¿No tienes una cuenta? <a href="signup">Registrarse</a></p>
             </div>
         </div>
     </div>
     
     <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
     <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"  type="module"></script>
 </body>
 </html>

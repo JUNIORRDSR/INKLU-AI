@@ -14,7 +14,7 @@
                 <p>Únete a InklúAI hoy</p>
             </div>
             
-            <form id="signupForm" class="auth-form">
+            <form id="signupForm" class="auth-form" method="POST">
                 <div class="form-group">
                     <label for="username">Nombre de usuario</label>
                     <input 
@@ -88,7 +88,7 @@
                     <span class="error-message" id="termsError"></span>
                 </div>
                 
-                <button type="submit" class="auth-button primary">Crear Cuenta</button>
+                <button type="submit" class="auth-button primary" id="loginBtn">Crear Cuenta</button>
                 
                 <div class="notification" id="notification">
                     <p id="notificationMessage"></p>
@@ -96,13 +96,13 @@
             </form>
             
             <div class="auth-link">
-                <p>¿Ya tienes una cuenta? <a href="login.html">Iniciar sesión</a></p>
+                <p>¿Ya tienes una cuenta? <a href="login">Iniciar sesión</a></p>
             </div>
         </div>
     </div>
     
-    <script src="{{ url_for('static', filename='js/validation') }}"></script>
+    <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
     <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}" type="module"></script>
 </body>
 </html>
