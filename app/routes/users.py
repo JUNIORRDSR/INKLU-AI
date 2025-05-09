@@ -61,7 +61,7 @@ def login():
     try:
         data = request.get_json()
         email = data.get('Correo')
-        password = data.get('Contraseña')
+        password = data.get('Contrasena')
         
         if not email or not password:
             return jsonify({"error": "Correo y contraseña son requeridos"}), 400

@@ -45,7 +45,7 @@ const UserStorage = {
     // Replace with actual credential verification logic
     const data = {
       Correo: identifier,
-      Contraseña: password
+      Contrasena: password
       };
       console.log(data)
       // Call the loginUser function with the data object
