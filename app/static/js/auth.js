@@ -3,6 +3,7 @@
  */
 
 // Mock implementations (replace with actual implementations or imports)
+import { loginUser } from './apis/loginApi.js';
 import {registerUser} from './apis/registerApi.js';
 
 const SessionManager = {
@@ -49,7 +50,7 @@ const UserStorage = {
       console.log(data)
       // Call the loginUser function with the data object
       try {
-        const response = await registerUser(data);
+        const response = await loginUser(data);
         console.log(response);
       } catch (error) {
         console.error('Error al iniciar sesión:', error);
