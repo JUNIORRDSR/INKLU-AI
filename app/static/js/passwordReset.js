@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("resetToken").value = token
     } else {
       // No token provided, redirect to request page
-      window.location.href = "reset-password-request.html"
+      window.location.href = "configuration.html"
     }
   }
 })

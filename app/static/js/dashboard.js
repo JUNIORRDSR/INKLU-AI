@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const changePasswordButton = document.querySelector(".dashboard-card button:nth-child(2)")
   if (changePasswordButton) {
     changePasswordButton.addEventListener("click", () => {
-      window.location.href = "reset-password-request.html"
+      window.location.href = "configuration.html"
     })
   }
 })
