@@ -40,13 +40,11 @@ def reset_password(token):
 
 # Rutas protegidas (requieren autenticación)
 @viewpages_bp.route('/dashboard')
-@login_required
 def dashboard():
     """Panel de control principal"""
     return render_template('dashboard.html')
 
 @viewpages_bp.route('/chat')
-@login_required
 def chat():
     """Página del chat con IA"""
     return render_template('chat.html')
