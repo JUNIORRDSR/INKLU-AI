@@ -1,266 +1,266 @@
 import os
-from langchain_deepseek import ChatDeepSeek
-from langchain_core.messages import HumanMessage, SystemMessage
-from langgraph.prebuilt import create_react_agent
-from langchain.chat_models import init_chat_model
-from langchain_core.tools import tool
-from pydantic.v1 import BaseModel, Field
+import asyncio
+import json
+import logging
+from typing import List, Optional, Dict, Any
 from dotenv import load_dotenv
 import requests
-import os
-from typing import List, Optional
-import json
+from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_deepseek import ChatDeepSeek
+from langgraph.prebuilt import create_react_agent
+from langchain_core.tools import tool
+from pydantic.v1 import BaseModel, Field
+
+# Configurar logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(message)s")
+logger = logging.getLogger("JobSearchAgent")
 
 # Cargar variables de entorno
 load_dotenv()
 
-# 1. Configuración de modelos
-llm_orquestador = init_chat_model(
-    model="deepseek-chat",
-    model_provider="deepseek",
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
+# Configuración centralizada
+CONFIG = {
+    "deepseek_model": {
+        "model": "deepseek-chat",
+        "api_key": os.getenv("DEEPSEEK_API_KEY"),
+    },
+    "adzuna": {
+        "app_id": os.getenv("ADZUNA_APP_ID"),
+        "app_key": os.getenv("ADZUNA_APP_KEY"),
+    },
+    "google": {
+        "api_key": os.getenv("GOOGLE_API_KEY"),
+        "cse_id": os.getenv("GOOGLE_CSE_ID"),
+    },
+}
+
+# Inicializar modelo DeepSeek
+llm = ChatDeepSeek(
+    model=CONFIG["deepseek_model"]["model"],
+    api_key=CONFIG["deepseek_model"]["api_key"],
+)
+orquestador = ChatDeepSeek(
+    model=CONFIG["deepseek_model"]["model"],
+    api_key=CONFIG["deepseek_model"]["api_key"],
 )
 
-# 2. Herramientas 
+# Modelo para parámetros de búsqueda
 class BusquedaParams(BaseModel):
-    board_tokens: List[str] = Field(..., description="Subdominios de empresas ej: airbnb, google, microsoft")
     keywords: List[str] = Field(default=["discapacidad"], description="Palabras clave de búsqueda")
-    location_filter: Optional[str] = Field(None, description="Filtro de ubicación (ej: Colombia, España)")
+    location: Optional[str] = Field(None, description="Ubicación (ej: Colombia, Bogotá)")
+    companies: Optional[List[str]] = Field(None, description="Empresas específicas (ej: Bancolombia, Google)")
 
 @tool
-def buscar_empleos(params: BusquedaParams) -> str:
-    """Busca empleos para personas con discapacidad en boards de empresas específicas"""
-    # Verificar que los board_tokens son realmente empresas y no ubicaciones
-    empresas_sugeridas = ["bancolombia", "grupoexito", "ecopetrol", "nutresa", "falabella", 
-                       "microsoft", "google", "ibm", "siemens", "unilever", "johnson", "colsubsidio"]
-    
-    # Si los tokens parecen ubicaciones y no empresas, sugerir empresas
-    es_ubicacion = False
-    ubicaciones = ["colombia", "bogota", "medellin", "cali", "barranquilla", "cartagena"]
-    
-    if all(board.lower() in ubicaciones for board in params.board_tokens):
-        es_ubicacion = True
-        
-    results = []
-    
-    # Si parece que se ingresó una ubicación en lugar de empresa
-    if es_ubicacion:
-        results.append(f"⚠️ Parece que has ingresado una ubicación ({', '.join(params.board_tokens)}) " 
-                     f"en lugar de nombres de empresas.")
-        results.append("🔍 Aquí hay algunas empresas con programas de inclusión laboral que podrías considerar:")
-        
-        for empresa in empresas_sugeridas[:5]:
-            keywords_query = " ".join(params.keywords)
-            location_text = f" en {params.location_filter}" if params.location_filter else ""
-            results.append(f"- {empresa.title()}: Oportunidades para personas con {keywords_query}{location_text}")
-            
-        results.append("\n💡 Para una búsqueda más específica, intenta con nombres de empresas como: " + 
-                     ", ".join(empresa.title() for empresa in empresas_sugeridas[5:]))
-    else:
-        # Proceder con la búsqueda normal
-        for board in params.board_tokens:
-            keywords_query = " ".join(params.keywords)
-            location_text = f" en {params.location_filter}" if params.location_filter else ""
-            
-            # Simulación de resultados de búsqueda de empleo
-            results.append(f"🏢 {board.title()}")
-            results.append(f"  - Vacante: Analista administrativo para personas con {keywords_query}")
-            results.append(f"  - Ubicación: {params.location_filter if params.location_filter else 'Remoto'}")
-            results.append(f"  - Descripción: Posición inclusiva que valora la diversidad y proporciona adaptaciones necesarias")
-            results.append("")
-    
-    return "\n".join(results)
-
-@tool
-def google_search_empleos(query: str) -> str:
-    """Realiza búsqueda de empleos para personas con discapacidad en la web usando la API de Google"""
-    base_url = "https://www.googleapis.com/customsearch/v1"
-    
-    # Modificar la consulta para enfocarse en empleos para personas con discapacidad
-    modified_query = f"{query} empleo discapacidad inclusivo"
-    
-    # Verificar que las claves de API estén configuradas
-    google_api_key = "AIzaSyA0-lCzH3pPTsDzlsmcl6UdGrvEh83dtfE"
-    google_cse_id = os.getenv("GOOGLE_CSE_ID")
-    
-    if not google_api_key or not google_cse_id:
-        return """API no configurada correctamente. Por favor verifica:
-1. Que existe un archivo .env en la misma carpeta que el script
-2. Que contenga las claves GOOGLE_API_KEY y GOOGLE_CSE_ID válidas
-3. Ejemplo de formato en .env:
-   GOOGLE_API_KEY=AIzaSyB1234example5678
-   GOOGLE_CSE_ID=123456789abcdef"""
-    
-    params = {
-        "q": modified_query,
-        "key": google_api_key,
-        "cx": google_cse_id,
-        "num": 5
-    }
-    
-    try:
-        response = requests.get(base_url, params=params)
-        if response.status_code == 200:
-            data = response.json()
-            if "items" in data:
-                results = []
-                for item in data["items"]:
-                    results.append({
-                        "title": item.get("title", "Sin título"),
-                        "link": item.get("link", ""),
-                        "snippet": item.get("snippet", "Sin descripción")
-                    })
-                return json.dumps(results, ensure_ascii=False)
-            else:
-                return "No se encontraron resultados"
-        else:
-            error_data = {}
-            try:
-                error_data = response.json()
-            except:
-                pass
-                
-            error_message = f"Error en la API: {response.status_code}"
-            if error_data and "error" in error_data:
-                error_message += f"\nDetalle: {error_data['error'].get('message', 'No hay detalles')}"
-            
-            # Simulación de resultados para desarrollo/pruebas cuando hay error en la API
-            return """En caso de error con la API de Google, aquí hay algunos recursos recomendados para buscar empleo:
-            
-1. Portales de empleo especializados en Colombia:
-   - Incluyeme.com: https://www.incluyeme.com/colombia/
-   - Pacto de Productividad: https://www.pactodeproductividad.com/
-   - ServicioPublicoDeEmpleo: https://www.serviciodeempleo.gov.co/
-
-2. Empresas con programas de inclusión en Colombia:
-   - Grupo Éxito
-   - Bancolombia
-   - Falabella
-   - Fundación Corona
-   
-3. Organizaciones y fundaciones:
-   - Fundación Saldarriaga Concha
-   - Best Buddies Colombia
-   - SENA - Programas de inclusión laboral"""
-        
-    except Exception as e:
-        return f"Error en la búsqueda: {str(e)}\n\nPor favor verifica tu conexión a internet y las claves API"
-
-# 3. Configurar agente
-tools = [buscar_empleos, google_search_empleos]
-agent = create_react_agent(
-    llm_orquestador,
-    tools,
-    prompt=SystemMessage(content="""Eres un asistente especializado en buscar empleos para personas con discapacidad.
-Tu objetivo es encontrar oportunidades laborales inclusivas y accesibles.
-
-Sigue estos pasos:
-1. Cuando recibas una consulta, analiza si menciona empresas específicas:
-   - Si menciona empresas (ej: Bancolombia, Exito), usa buscar_empleos con esas empresas
-   - Si solo menciona ubicaciones (ej: Colombia), usa buscar_empleos con empresas conocidas por sus programas de inclusión
-
-2. Para la herramienta buscar_empleos:
-   - board_tokens debe ser una lista de NOMBRES DE EMPRESAS (no países ni ciudades)
-   - keywords debe incluir el tipo de discapacidad mencionada (física, auditiva, etc.)
-   - location_filter debe ser el país o ciudad mencionada
-
-3. Luego usa google_search_empleos para ampliar la búsqueda con resultados web
-   - Si la API de Google falla, no te preocupes, usa los recursos alternativos proporcionados
-
-4. En tu respuesta final:
-   - Organiza los resultados por relevancia
-   - Prioriza empleos que mencionan inclusión y accesibilidad
-   - Incluye información de contacto cuando esté disponible
-   - Proporciona consejos adicionales para la búsqueda de empleo
-""")
-)
-
-# 4. Función principal para realizar búsquedas
-
-def buscar_oportunidades(consulta):
-    """
-    Realiza búsquedas de oportunidades laborales para personas con discapacidad utilizando APIs y modelos de IA.
-
-    Esta función coordina el proceso de búsqueda de empleos inclusivos mediante:
-    1. Verificación de configuración de APIs necesarias (Google Search y DeepSeek)
-    2. Procesamiento de la consulta del usuario a través de un agente de IA
-    3. Búsqueda en múltiples fuentes (boards de empresas y resultados web)
-    4. Presentación de resultados con formato amigable y emojis
+async def buscar_empleos(params: BusquedaParams) -> str:
+    """Busca empleos inclusivos usando la API de Adzuna.
 
     Args:
-        consulta (str): Texto con la consulta del usuario que puede incluir:
-            - Tipo de discapacidad
-            - Ubicación deseada
-            - Empresas específicas
-            - Tipo de trabajo o sector
+        params (BusquedaParams): Parámetros de búsqueda.
 
-    Raises:
-        Exception: Si hay errores de conectividad o problemas con las APIs.
-            Se manejan los errores mostrando sugerencias de solución.
-
-    Notas:
-        - Opera en modo demostración si las APIs no están configuradas
-        - Utiliza emojis para mejorar la legibilidad de los resultados
-        - Incluye sugerencias de empresas con programas de inclusión
+    Returns:
+        str: Resultados de empleos en formato texto.
     """
-    print(f"\n🔍 Buscando: {consulta}\n")
-    message = HumanMessage(content=consulta)
-    
-    # Verificar si hay claves de API configuradas
-    api_key = os.getenv("GOOGLE_API_KEY")
-    cse_id = os.getenv("GOOGLE_CSE_ID")
-    deepseek_key = os.getenv("DEEPSEEK_API_KEY")
-    
-    if not api_key or not cse_id or not deepseek_key:
-        print("\n⚠️ ADVERTENCIA: Algunas claves API no están configuradas correctamente.")
-        print("Por favor crea un archivo .env con las siguientes variables:")
-        print("GOOGLE_API_KEY=tu_clave_google_api")
-        print("GOOGLE_CSE_ID=tu_id_motor_busqueda")
-        print("DEEPSEEK_API_KEY=tu_clave_deepseek_api")
-        print("\nEl programa continuará en modo de demostración con resultados simulados.\n")
-    
-    try:
-        for step in agent.stream(
-            {"messages": message},
-            stream_mode="values",
-        ):
-            resultado = step["messages"][-1]
-            resultado.pretty_print()
-    except Exception as e:
-        print(f"\n❌ Error durante la búsqueda: {str(e)}")
-        print("\nSugerencias para solucionar el problema:")
-        print("1. Verifica tu conexión a internet")
-        print("2. Comprueba que las API keys sean válidas")
-        print("3. Intenta con una búsqueda más específica")
-    
-    print("\n✅ Búsqueda finalizada\n")
+    logger.info("Agente BuscarEmpleos: Iniciando búsqueda en Adzuna")
+    base_url = "https://api.adzuna.com/v1/api/jobs"
 
-# Ejemplo de uso cuando se ejecuta el script directamente
+    # Verificar configuración de Adzuna
+    if not CONFIG["adzuna"]["app_id"] or not CONFIG["adzuna"]["app_key"]:
+        logger.error("Agente BuscarEmpleos: Claves de Adzuna no configuradas")
+        return """⚠️ API de Adzuna no configurada. Agrega en .env:
+ADZUNA_APP_ID=tu_id
+ADZUNA_APP_KEY=tu_clave
+Consulta https://developer.adzuna.com/ para obtener claves."""
+
+    # Construir consulta
+    query = " ".join(params.keywords) + " inclusivo"
+    if params.companies:
+        query += " " + " ".join(params.companies)
+
+    # Parámetros de la API
+    api_params = {
+        "app_id": CONFIG["adzuna"]["app_id"],
+        "app_key": CONFIG["adzuna"]["app_key"],
+        "what": query,
+        "results_per_page": 5,
+    }
+    if params.location:
+        api_params["where"] = params.location
+
+    try:
+        response = requests.get(f"{base_url}/search/1", params=api_params)
+        response.raise_for_status()
+        data = response.json()
+
+        if not data.get("results"):
+            logger.info("Agente BuscarEmpleos: No se encontraron empleos")
+            return "No se encontraron empleos. Intenta con otras palabras clave o ubicación."
+
+        results = []
+        for job in data["results"]:
+            title = job.get("title", "Sin título")
+            company = job.get("company", {}).get("display_name", "Desconocida")
+            location = job.get("location", {}).get("display_name", "No especificada")
+            description = job.get("description", "Sin descripción")[:200] + "..."
+            url = job.get("redirect_url", "")
+
+            results.append(f"🏢 {company}")
+            results.append(f"  - Vacante: {title}")
+            results.append(f"  - Ubicación: {location}")
+            results.append(f"  - Descripción: {description}")
+            results.append(f"  - Enlace: {url}")
+            results.append("")
+
+        logger.info("Agente BuscarEmpleos: Empleos encontrados")
+        return "\n".join(results)
+
+    except requests.RequestException as e:
+        logger.error(f"Agente BuscarEmpleos: Error en API Adzuna: {str(e)}")
+        return f"Error en la búsqueda: {str(e)}\n\nSugerencia: Intenta con otra ubicación o palabras clave."
+
+@tool
+async def google_search_empleos(query: str) -> str:
+    """Realiza búsqueda de empleos inclusivos en la web usando Google Custom Search.
+
+    Args:
+        query (str): Consulta de búsqueda.
+
+    Returns:
+        str: Resultados en formato JSON.
+    """
+    logger.info("Agente GoogleSearch: Iniciando búsqueda en Google")
+    base_url = "https://www.googleapis.com/customsearch/v1"
+
+    # Modificar consulta para empleos inclusivos
+    modified_query = f"{query} empleo discapacidad inclusivo"
+
+    # Verificar configuración
+    if not CONFIG["google"]["api_key"] or not CONFIG["google"]["cse_id"]:
+        logger.error("Agente GoogleSearch: Claves de Google no configuradas")
+        return """⚠️ API de Google no configurada. Agrega en .env:
+GOOGLE_API_KEY=tu_clave
+GOOGLE_CSE_ID=tu_id
+Consulta https://developers.google.com/custom-search/v1/introduction para obtener claves.
+
+Recursos alternativos:
+- Incluyeme: https://www.incluyeme.com/colombia/
+- Servicio Público de Empleo: https://www.serviciodeempleo.gov.co/
+- Fundación Saldarriaga Concha: https://www.saldarriagaconcha.org/"""
+
+    params = {
+        "q": modified_query,
+        "key": CONFIG["google"]["api_key"],
+        "cx": CONFIG["google"]["cse_id"],
+        "num": 5,
+    }
+
+    try:
+        response = requests.get(base_url, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+        if "items" not in data:
+            logger.info("Agente GoogleSearch: No se encontraron resultados")
+            return "No se encontraron resultados web."
+
+        results = []
+        for item in data["items"]:
+            results.append({
+                "title": item.get("title", "Sin título"),
+                "link": item.get("link", ""),
+                "snippet": item.get("snippet", "Sin descripción"),
+            })
+
+        logger.info("Agente GoogleSearch: Resultados web obtenidos")
+        return json.dumps(results, ensure_ascii=False, indent=2)
+
+    except requests.RequestException as e:
+        logger.error(f"Agente GoogleSearch: Error en API Google: {str(e)}")
+        return f"Error en la búsqueda web: {str(e)}\n\nRecursos alternativos: Incluyeme, Servicio Público de Empleo."
+
+# Configurar agente
+tools = [buscar_empleos, google_search_empleos]
+agent = create_react_agent(
+    orquestador,
+    tools,
+    prompt=SystemMessage(content="""Eres un asistente especializado en buscar empleos inclusivos para personas con discapacidad.
+
+Instrucciones:
+1. Analiza la consulta para identificar:
+   - Tipo de discapacidad (física, auditiva, visual, etc.)
+   - Ubicación (país, ciudad)
+   - Empresas específicas (si se mencionan)
+   - Palabras clave (sector, tipo de trabajo)
+
+2. Usa la herramienta buscar_empleos para buscar en la API de Adzuna:
+   - Incluye el tipo de discapacidad y palabras clave en keywords
+   - Usa la ubicación como location
+   - Incluye empresas específicas en companies si se mencionan
+
+3. Usa google_search_empleos para complementar con resultados web.
+
+4. En la respuesta final:
+   - Organiza los resultados por relevancia
+   - Prioriza empleos inclusivos y accesibles
+   - Incluye enlaces y descripciones claras
+   - Proporciona consejos para la búsqueda (ej. contactar fundaciones, usar portales locales)
+
+5. Si una API falla, usa la otra herramienta o proporciona recursos alternativos.
+"""),
+)
+
+async def buscar_oportunidades(consulta: str) -> Dict[str, Any]:
+    """Busca oportunidades laborales inclusivas.
+
+    Args:
+        consulta (str): Consulta del usuario.
+
+    Returns:
+        Dict[str, Any]: Resultados y estado.
+    """
+    logger.info(f"Agente Orquestador: Iniciando búsqueda para: {consulta}")
+    try:
+        # Verificar claves API
+        if not CONFIG["deepseek_model"]["api_key"]:
+            logger.error("Agente Orquestador: DEEPSEEK_API_KEY no configurada")
+            return {"status": "error", "message": "DEEPSEEK_API_KEY no configurada en .env"}
+
+        message = HumanMessage(content=consulta)
+        results = []
+
+        # Ejecutar agente
+        async for step in agent.astream({"messages": message}, stream_mode="values"):
+            result = step["messages"][-1].content
+            logger.info(f"Agente Orquestador: Resultado parcial: {result}")
+            if result != consulta:
+                results.append(result)
+
+        if not results:
+            logger.error("Agente Orquestador: No se obtuvieron resultados")
+            return {"status": "error", "message": "No se encontraron resultados."}
+
+        # Combinar resultados
+        final_result = "\n\n".join(results)
+        logger.info("Agente Orquestador: Búsqueda completada")
+        return {
+            "status": "success",
+            "message": final_result,
+            "tips": """Consejos para tu búsqueda:
+- Contacta fundaciones como Saldarriaga Concha o Best Buddies.
+- Usa portales como Incluyeme.com o Servicio Público de Empleo.
+- Revisa programas de inclusión en empresas como Bancolombia o Grupo Éxito."""
+        }
+
+    except Exception as e:
+        logger.error(f"Agente Orquestador: Error: {str(e)}")
+        return {
+            "status": "error",
+            "message": f"Error durante la búsqueda: {str(e)}",
+            "tips": "Verifica tu conexión, claves API, o intenta con una consulta más específica."
+        }
+
 if __name__ == "__main__":
-    print("\n=== AGENTE DE BÚSQUEDA DE EMPLEOS PARA PERSONAS CON DISCAPACIDAD ===\n")
-    print("🧠 Desarrollado con LangChain y DeepSeek AI\n")
-    
-    # Mostrar opciones predefinidas
-    print("Opciones de búsqueda:")
-    print("1. Empleos inclusivos en Colombia para discapacidad física")
-    print("2. Oportunidades laborales para discapacidad auditiva en empresas tecnológicas")
-    print("3. Trabajo para personas con discapacidad visual en Bancolombia")
-    print("4. Búsqueda personalizada")
-    
-    opcion = input("\nSelecciona una opción (1-4) o presiona Enter para la opción 1: ")
-    
-    if not opcion or opcion == "1":
-        consulta = "Buscar empleos inclusivos en Colombia para personas con discapacidad física"
-    elif opcion == "2":
-        consulta = "Buscar oportunidades laborales para personas con discapacidad auditiva en empresas de tecnología"
-    elif opcion == "3":
-        consulta = "Buscar trabajo para personas con discapacidad visual en Bancolombia"
-    elif opcion == "4":
-        consulta = input("\nIntroduce tu búsqueda personalizada: ")
-        if not consulta:
-            consulta = "Buscar empleos inclusivos en Colombia para personas con discapacidad física"
-    else:
-        print("Opción no válida. Usando la opción 1 por defecto.")
-        consulta = "Buscar empleos inclusivos en Colombia para personas con discapacidad física"
-    
-    buscar_oportunidades(consulta)
+    consulta = input("Introduce tu búsqueda de empleo (ej: empleos para discapacidad auditiva en Bogotá): ")
+    if not consulta:
+        consulta = "Empleos inclusivos en Colombia para discapacidad física"
+    result = asyncio.run(buscar_oportunidades(consulta))
+    print(f"\n🔍 Resultados:\n{result['message']}\n\n💡 {result['tips']}")

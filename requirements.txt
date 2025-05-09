@@ -33,6 +33,7 @@ langchain
 langgraph
 langchain-deepseek
 langchain-google-genai
+langchain-google-vertexai
 langchain-community
 SpeechRecognition
 PyAudio
