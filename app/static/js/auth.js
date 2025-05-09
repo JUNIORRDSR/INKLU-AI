@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Redirect if already logged in
-  if (window.location.pathname.includes("login.html") || window.location.pathname.includes("signup.html")) {
+  if (window.location.pathname.includes("login") || window.location.pathname.includes("signup.html")) {
     if (SessionManager.isAuthenticated()) {
       window.location.href = "dashboard.html"
     }
