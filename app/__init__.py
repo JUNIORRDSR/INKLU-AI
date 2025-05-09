@@ -3,6 +3,7 @@ from flask_cors import CORS
 from app.config import config
 from app.extensions import db, ma, login_manager, migrate
 import os
+import click
 
 def create_app(config_name='development'):
     # Determinar la configuración a utilizar
@@ -13,6 +14,10 @@ def create_app(config_name='development'):
     app = Flask(__name__, static_folder='static', template_folder='templates')
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
+    
+    # Configurar la clave secreta si no está definida en la configuración
+    if not app.config.get('SECRET_KEY'):
+        app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'clave_secreta_predeterminada'
     
     # Inicializar extensiones
     db.init_app(app)
@@ -26,13 +31,18 @@ def create_app(config_name='development'):
     # Registrar manejadores de errores personalizados
     register_error_handlers(app)
     
-    # Mostrar rutas registradas en la consola (útil para debug)
-    if app.config['DEBUG']:
+    # Registrar comandos personalizados
+    register_commands(app)
+    
+    return app
+
+def register_commands(app):
+    @app.cli.command('list-routes')
+    def list_routes():
+        """Listar todas las rutas registradas en la aplicación."""
         print("Rutas registradas:")
         for rule in app.url_map.iter_rules():
             print(f"{rule.endpoint}: {rule.rule}")
-    
-    return app
 
 def register_error_handlers(app):
     @app.errorhandler(404)
