@@ -22,9 +22,11 @@ const UserStorage = {
     // Replace with actual user creation logic
     
     const data = {
-        username:username,
-        email: email,
-        password:password
+      NombreCompleto:username,
+      Correo: email,
+      Contrasena:password,
+      Rol: "Talento",
+      IdDiscapacidad: 2,
       };
       console.log(data)
       // Call the loginUser function with the data object
