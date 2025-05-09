@@ -13,7 +13,7 @@ from .courses import courses_bp
 from .indicators import indicators_bp
 from .enrollments import enrollments_bp
 from .viewpages import viewpages_bp
-
+from app.routes.chat_routes import chat_bp
 # Register all blueprints
 def register_blueprints(app):
     app.register_blueprint(auth_bp, url_prefix='/api')
@@ -25,3 +25,4 @@ def register_blueprints(app):
     app.register_blueprint(indicators_bp, url_prefix='/api')
     app.register_blueprint(enrollments_bp, url_prefix='/api')
     app.register_blueprint(viewpages_bp)
+    app.register_blueprint(chat_bp, url_prefix='/chat')

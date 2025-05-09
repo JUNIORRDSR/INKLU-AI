@@ -8,6 +8,7 @@ flask_login
 Flask-WTF
 flask-jwt-extended
 flask-cors
+Flask-Async
 
 # base de datos dependencias
 sqlalchemy
