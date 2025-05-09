@@ -32,12 +32,6 @@ def reset_password_request():
     """Página para solicitar restablecimiento de contraseña"""
     return render_template('reset-password-request.html')
 
-@viewpages_bp.route('/reset-password/<token>')
-def reset_password(token):
-    """Página para establecer nueva contraseña"""
-    # El token se puede validar en el frontend o backend según tu diseño
-    return render_template('reset-password.html')
-
 # Rutas protegidas (requieren autenticación)
 @viewpages_bp.route('/dashboard')
 def dashboard():
@@ -48,3 +42,9 @@ def dashboard():
 def chat():
     """Página del chat con IA"""
     return render_template('chat.html')
+
+@viewpages_bp.route('/configuration')
+def configuration():
+    """Página de configuración"""
+    return render_template('configuration.html')
+

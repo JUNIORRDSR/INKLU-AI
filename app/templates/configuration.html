@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - InklúAI</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='img/inklufnd.png') }}" alt="InklúAI Logo" class="logo-img">
+            <div class="logo-text">InKlú-AI</div>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{url_for('viewpages.dashboard') }}">Inicio</a></li>
+                <li><a href="{{ url_for('viewpages.chat') }}">Chat con Inklú</a></li>
+                <li><a href="{{ url_for('viewpages.configuration') }}" class="active">Configuración</a></li>
+            </ul>
+        </nav>
+        <div class="user-menu">
+            <div class="user-info">
+                <span id="userDisplayName">Usuario</span>
+                <a href="{{ url_for('viewpages.login') }}" id="logoutButton" class="logout-button">Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <h1 class="auth-titulo">Configuración de la cuenta</h1>
+        
+        <div class="config-sections">
+            <div class="config-card">
+                <h2 class="config-section-title">Información personal</h2>
+                <form class="config-form" id="personalInfoForm">
+                    <div class="form-group">
+                        <label for="fullName">Nombre completo</label>
+                        <input type="text" id="fullName" name="fullName" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" name="email" class="form-input" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Teléfono</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" class="form-input">
+                    </div>
+                    <button type="submit" class="auth-button gradient">Guardar cambios</button>
+                </form>
+            </div>
+
+            <div class="config-card">
+                <h2 class="config-section-title">Cambiar contraseña</h2>
+                <form class="config-form" id="passwordForm">
+                    <div class="form-group">
+                        <label for="currentPassword">Contraseña actual</label>
+                        <input type="password" id="currentPassword" name="currentPassword" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Nueva contraseña</label>
+                        <input type="password" id="newPassword" name="newPassword" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar contraseña</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input">
+                    </div>
+                    <button type="submit" class="auth-button gradient">Actualizar contraseña</button>
+                </form>
+            </div>
+
+            <div class="config-card">
+                <h2 class="config-section-title">Preferencias de Accesibilidad</h2>
+                <form class="config-form" id="accessibilityForm">
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="highContrast" name="highContrast" class="form-checkbox">
+                        <label for="highContrast">Modo alto contraste</label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="largerText" name="largerText" class="form-checkbox">
+                        <label for="largerText">Texto más grande</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="voiceSpeed">Velocidad de lectura por voz</label>
+                        <select id="voiceSpeed" name="voiceSpeed" class="form-select">
+                            <option value="slow">Lenta</option>
+                            <option value="normal" selected>Normal</option>
+                            <option value="fast">Rápida</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="auth-button gradient">Guardar preferencias</button>
+                </form>
+            </div>
+
+            <div class="config-card">
+                <h2 class="config-section-title">Notificaciones</h2>
+                <form class="config-form" id="notificationsForm">
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="emailNotif" name="emailNotif" class="form-checkbox" checked>
+                        <label for="emailNotif">Recibir notificaciones por correo</label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="jobAlerts" name="jobAlerts" class="form-checkbox" checked>
+                        <label for="jobAlerts">Alertas de nuevas ofertas de trabajo</label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="newsUpdates" name="newsUpdates" class="form-checkbox">
+                        <label for="newsUpdates">Noticias y actualizaciones de InklúAI</label>
+                    </div>
+                    <button type="submit" class="auth-button gradient">Actualizar notificaciones</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/configuration.js') }}"></script>
+</body>
+</html>
