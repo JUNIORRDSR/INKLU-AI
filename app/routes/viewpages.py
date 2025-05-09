@@ -50,3 +50,4 @@ def dashboard():
 def chat():
     """Página del chat con IA"""
     return render_template('chat.html')
+
