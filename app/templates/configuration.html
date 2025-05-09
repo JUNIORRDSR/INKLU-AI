@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración - InklúAI</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
 </head>
 <body>
@@ -22,13 +23,13 @@
         <div class="user-menu">
             <div class="user-info">
                 <span id="userDisplayName">Usuario</span>
-                <button id="logoutButton" class="logout-button">Cerrar sesión</button>
+                <a href="{{ url_for('viewpages.login') }}" id="logoutButton" class="logout-button">Cerrar sesión</a>
             </div>
         </div>
     </header>
 
     <main class="dashboard-content">
-        <h1 class="config-titulo">Configuración de la cuenta</h1>
+        <h1 class="auth-titulo">Configuración de la cuenta</h1>
         
         <div class="config-sections">
             <div class="config-card">
@@ -46,7 +47,7 @@
                         <label for="phoneNumber">Teléfono</label>
                         <input type="tel" id="phoneNumber" name="phoneNumber" class="form-input">
                     </div>
-                    <button type="submit" class="submit-button">Guardar cambios</button>
+                    <button type="submit" class="auth-button gradient">Guardar cambios</button>
                 </form>
             </div>
 
@@ -65,7 +66,7 @@
                         <label for="confirmPassword">Confirmar contraseña</label>
                         <input type="password" id="confirmPassword" name="confirmPassword" class="form-input">
                     </div>
-                    <button type="submit" class="submit-button">Actualizar contraseña</button>
+                    <button type="submit" class="auth-button gradient">Actualizar contraseña</button>
                 </form>
             </div>
 
@@ -88,7 +89,7 @@
                             <option value="fast">Rápida</option>
                         </select>
                     </div>
-                    <button type="submit" class="submit-button">Guardar preferencias</button>
+                    <button type="submit" class="auth-button gradient">Guardar preferencias</button>
                 </form>
             </div>
 
@@ -107,7 +108,7 @@
                         <input type="checkbox" id="newsUpdates" name="newsUpdates" class="form-checkbox">
                         <label for="newsUpdates">Noticias y actualizaciones de InklúAI</label>
                     </div>
-                    <button type="submit" class="submit-button">Actualizar notificaciones</button>
+                    <button type="submit" class="auth-button gradient">Actualizar notificaciones</button>
                 </form>
             </div>
         </div>

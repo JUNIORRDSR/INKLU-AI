@@ -595,14 +595,15 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
 .job-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 .job-title {
@@ -754,7 +755,7 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 
 .config-section-title {
     font-size: 1.3rem;
-    color: #1a73e8;
+    color: var(--azulmio);
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #f0f0f0;
@@ -774,7 +775,7 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #444;
+    color: var(--azulmio);
 }
 
 .form-input,
@@ -782,16 +783,16 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 0.9rem;
     transition: border-color 0.3s;
 }
 
 .form-input:focus,
 .form-select:focus {
-    border-color: #1a73e8;
+    border-color: var(--moradomio);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    box-shadow: 0 0 0 3px rgba(213, 8, 226, 0.1);
 }
 
 .form-input:disabled {
@@ -813,21 +814,22 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 }
 
 .submit-button {
-    background-color: #1a73e8;
+    background: linear-gradient(135deg, var(--azulmio) 0%, var(--moradomio) 100%);
     color: white;
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
     border: none;
-    border-radius: 6px;
-    padding: 10px 15px;
-    font-size: 1rem;
-    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s;
     margin-top: 1rem;
     align-self: flex-end;
 }
 
 .submit-button:hover {
-    background-color: #1557b0;
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilos para la página de login modernizada */
@@ -882,11 +884,12 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
   border-radius: 10px;
   padding: 2rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .auth-card.modern:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 .auth-card-header {
@@ -932,6 +935,8 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
   padding: 12px;
   font-weight: 600;
   transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
 }
 
 .auth-button.gradient:hover {
@@ -973,6 +978,87 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 
 .forgot-password:hover {
   color: var(--moradomio);
+}
+
+/* Ajustes para mejor coherencia entre páginas */
+
+/* Unificar los botones de configuración con el estilo gradient */
+.auth-button.gradient, 
+.submit-button {
+  background: linear-gradient(135deg, var(--azulmio) 0%, var(--moradomio) 100%);
+  color: white;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.auth-button.gradient:hover,
+.submit-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Unificar títulos de secciones con el mismo color */
+.config-section-title {
+  font-size: 1.3rem;
+  color: var(--azulmio);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+/* Animación consistente para todas las tarjetas */
+.config-card,
+.auth-card.modern,
+.job-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.config-card:hover,
+.auth-card.modern:hover,
+.job-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Asegurar que los inputs tienen apariencia consistente */
+.form-input,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select {
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.form-input:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+select:focus {
+  border-color: var(--moradomio);
+  box-shadow: 0 0 0 3px rgba(213, 8, 226, 0.1);
+  outline: none;
+}
+
+/* Actualizar color de labels para mantener consistencia */
+.form-group label {
+  color: var(--azulmio);
+  font-weight: 500;
+}
+
+/* Actualizar color de checkbox */
+input[type="checkbox"] {
+  accent-color: var(--moradomio);
 }
 
 /* Ajustes responsive para la página de login */
