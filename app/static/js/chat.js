@@ -4,22 +4,8 @@
 
 // Mock SessionManager for demonstration purposes.  In a real application,
 // this would be handled by a proper authentication system.
-const SessionManager = {
-  isAuthenticated: () => {
-    // Check if a session exists.  This is a placeholder.
-    return localStorage.getItem("session") !== null
-  },
-  getSession: () => {
-    const sessionString = localStorage.getItem("session")
-    return sessionString ? JSON.parse(sessionString) : null
-  },
-  setSession: (session) => {
-    localStorage.setItem("session", JSON.stringify(session))
-  },
-  clearSession: () => {
-    localStorage.removeItem("session")
-  },
-}
+
+import { chatUser } from "./apis/chatApi.js"
 
 document.addEventListener("DOMContentLoaded", () => {
   
@@ -349,72 +335,152 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Function to simulate AI response
-  function simulateAIResponse(userMessage) {
-    // Simulate thinking time (1.5-3 seconds)
-    const thinkingTime = 1500 + Math.random() * 1500
-
-    setTimeout(() => {
-      // Hide typing indicator
-      hideTypingIndicator()
-
-      // Generate AI response based on user message
-      let aiResponse = ""
-
+  async function simulateAIResponse(userMessage) {
+    // Mostrar indicador de carga
+    showTypingIndicator();
+    
+    // Añadir un mensaje de espera después de 15 segundos
+    const waitMessageTimeout = setTimeout(() => {
+      updateWaitingMessage("La IA está procesando tu consulta. Esto puede tomar un tiempo...");
+    }, 15000);
+    
+    try {
       if (!userMessage || userMessage.trim() === "") {
         if (selectedFiles.length > 0) {
-          aiResponse =
-            "I've received your files. Is there anything specific you'd like me to help you with regarding these files?"
+          userMessage = "He recibido archivos del usuario";
         } else {
-          aiResponse = "I'm here to help. What would you like to discuss?"
+          userMessage = "Saludo inicial";
         }
-      } else if (userMessage.toLowerCase().includes("hello") || userMessage.toLowerCase().includes("hi")) {
-        aiResponse = "Hello! How can I assist you today?"
-      } else if (userMessage.toLowerCase().includes("help")) {
-        aiResponse =
-          "I'm here to help! You can ask me questions, share files, or even record audio messages. What would you like assistance with?"
-      } else if (userMessage.toLowerCase().includes("weather")) {
-        aiResponse =
-          "I don't have real-time weather data, but I'd be happy to discuss weather patterns or climate-related topics if you're interested."
-      } else if (userMessage.toLowerCase().includes("thank")) {
-        aiResponse = "You're welcome! Is there anything else I can help you with?"
-      } else {
-        // Default responses
-        const defaultResponses = [
-          "That's an interesting point. Could you tell me more about it?",
-          "I understand. How would you like me to help with this?",
-          "Thanks for sharing that information. What would you like to know about this topic?",
-          "I'm processing what you've shared. Is there a specific aspect you'd like me to focus on?",
-          "I appreciate you explaining that. What additional information would be helpful for you?",
-        ]
-        aiResponse = defaultResponses[Math.floor(Math.random() * defaultResponses.length)]
       }
+      
+      // Preparar datos para enviar al backend
+      const userData = {
+        message: userMessage
+      };
+      
+      console.log("Enviando mensaje al backend:", userData);
+      
+      // Llamar a la API del backend sin timeout
+      const response = await chatUser(userData);
+      console.log("Respuesta del backend recibida:", response);
+      
+      // Limpiar el timeout del mensaje de espera
+      clearTimeout(waitMessageTimeout);
+      
+      // Ocultar indicador de escritura una vez que tengamos la respuesta
+      hideTypingIndicator();
+      
+      // Obtener respuesta del backend
+      let aiResponse = "";
+      
+      // Verificar si la respuesta existe y tiene el formato esperado
+      if (response) {
+        console.log("Estructura completa de la respuesta:", JSON.stringify(response));
+        
+        if (response.status === "success" && response.response) {
+          aiResponse = response.response;
+        } else if (response.message) {
+          aiResponse = response.message;
+          console.warn("Respuesta con estado no exitoso:", response);
+        } else {
+          aiResponse = "Recibí una respuesta del servidor, pero no pude interpretarla correctamente. Por favor, intenta de nuevo.";
+          console.error("Formato de respuesta inesperado:", response);
+        }
+      } else {
+        aiResponse = "No se recibió una respuesta válida del servidor. Por favor, intenta de nuevo.";
+        console.error("Respuesta vacía o nula del servidor");
+      }
+      
+      // Crear elemento de mensaje AI
+      const messageElement = document.createElement("div");
+      messageElement.className = "message ai-message";
+      
+      // Añadir contenido del mensaje
+      const messageContent = document.createElement("div");
+      messageContent.className = "message-content";
+      
+      // Usar innerHTML para preservar posible formato HTML (si lo hay)
+      const textParagraph = document.createElement("p");
+      
+      // Verificar si hay contenido
+      if (aiResponse && aiResponse.trim() !== "") {
+        textParagraph.textContent = aiResponse;
+      } else {
+        textParagraph.textContent = "El servidor no envió una respuesta con contenido. Por favor, intenta nuevamente.";
+        console.error("Respuesta vacía del servidor");
+      }
+      
+      messageContent.appendChild(textParagraph);
+      messageElement.appendChild(messageContent);
+      
+      // Añadir hora del mensaje
+      const messageTime = document.createElement("div");
+      messageTime.className = "message-time";
+      messageTime.textContent = getCurrentTime();
+      messageElement.appendChild(messageTime);
+      
+      // Añadir mensaje al chat
+      chatMessages.appendChild(messageElement);
+      
+      // Scroll hasta abajo
+      scrollToBottom();
+      
+    } catch (error) {
+      console.error("Error al comunicarse con el backend:", error);
+      
+      // Limpiar el timeout del mensaje de espera
+      clearTimeout(waitMessageTimeout);
+      
+      // Ocultar indicador de escritura
+      hideTypingIndicator();
+      
+      // Mostrar mensaje de error
+      const messageElement = document.createElement("div");
+      messageElement.className = "message ai-message";
+      
+      const messageContent = document.createElement("div");
+      messageContent.className = "message-content";
+      
+      const textParagraph = document.createElement("p");
+      textParagraph.textContent = `Error de conexión: ${error.message || "No se pudo establecer conexión con el servidor"}. Por favor, verifica tu conexión e intenta de nuevo.`;
+      messageContent.appendChild(textParagraph);
+      
+      messageElement.appendChild(messageContent);
+      
+      // Añadir hora del mensaje
+      const messageTime = document.createElement("div");
+      messageTime.className = "message-time";
+      messageTime.textContent = getCurrentTime();
+      messageElement.appendChild(messageTime);
+      
+      // Añadir mensaje al chat
+      chatMessages.appendChild(messageElement);
+      
+      // Scroll hasta abajo
+      scrollToBottom();
+    }
+  }
 
-      // Create AI message element
-      const messageElement = document.createElement("div")
-      messageElement.className = "message ai-message"
-
-      // Add message content
-      const messageContent = document.createElement("div")
-      messageContent.className = "message-content"
-
-      const textParagraph = document.createElement("p")
-      textParagraph.textContent = aiResponse
-      messageContent.appendChild(textParagraph)
-
-      messageElement.appendChild(messageContent)
-
-      // Add message time
-      const messageTime = document.createElement("div")
-      messageTime.className = "message-time"
-      messageTime.textContent = getCurrentTime()
-      messageElement.appendChild(messageTime)
-
-      // Add message to chat
-      chatMessages.appendChild(messageElement)
-
-      // Scroll to bottom
-      scrollToBottom()
-    }, thinkingTime)
+  // Función para actualizar el mensaje de espera
+  function updateWaitingMessage(message) {
+    const indicator = document.getElementById("typingIndicator");
+    if (indicator) {
+      const waitingMsg = document.createElement("div");
+      waitingMsg.className = "waiting-message";
+      waitingMsg.style.marginTop = "5px";
+      waitingMsg.style.fontSize = "12px";
+      waitingMsg.style.color = "#666";
+      waitingMsg.textContent = message;
+      
+      // Eliminar mensajes anteriores si existen
+      const existingMsg = indicator.querySelector(".waiting-message");
+      if (existingMsg) {
+        existingMsg.remove();
+      }
+      
+      indicator.appendChild(waitingMsg);
+      scrollToBottom();
+    }
   }
 
   // Function to get current time
