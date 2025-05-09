@@ -36,6 +36,7 @@ langchain-deepseek
 langchain-google-genai
 langchain-google-vertexai
 langchain-community
+langchain-tavily
 SpeechRecognition
 PyAudio
 pyttsx3

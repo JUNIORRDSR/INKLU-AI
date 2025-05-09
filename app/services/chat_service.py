@@ -4,7 +4,7 @@ import json
 import logging
 from typing import Dict, Any, List, Optional
 from dotenv import load_dotenv
-from app.utils.agents.main import procesar_solicitud, CONFIG
+from app.utils.agents.main import procesar_solicitud
 
 # Configurar logging
 logging.basicConfig(
@@ -32,12 +32,35 @@ class ChatService:
         """
         logger.info(f"Procesando mensaje: {message[:50]}...")
         try:
-            result = await procesar_solicitud(message)
-            logger.info(f"Mensaje procesado con éxito: {result.get('status')}")
+            # Comprobar si procesar_solicitud es asíncrona o sincrónica
+            import inspect
+            if inspect.iscoroutinefunction(procesar_solicitud):
+                # Si es asíncrona, usar await
+                result = await procesar_solicitud(message)
+            else:
+                # Si es sincrónica, llamarla normalmente
+                result = procesar_solicitud(message)
+            
+            # Verificar si el resultado es None y manejarlo adecuadamente
+            if result is None:
+                logger.warning("La función procesar_solicitud devolvió None")
+                result = {
+                    "status": "success",
+                    "message": "Lo siento, no pude generar una respuesta. Por favor, intenta con otra pregunta.",
+                    "input": message
+                }
+                
+            logger.info(f"Mensaje procesado con éxito: {result}")
             return result
         except Exception as e:
             logger.error(f"Error al procesar mensaje: {str(e)}")
-            return {"status": "error", "message": f"Error al procesar mensaje: {str(e)}"}
+            # Creamos una respuesta predeterminada
+            return {
+                "status": "error", 
+                "message": "Lo siento, tuve problemas procesando tu solicitud. Por favor, intenta con otra pregunta.",
+                "error_details": str(e),
+                "input": message
+            }
 
     @staticmethod
     async def process_batch(messages: List[str]) -> List[Dict[str, Any]]:
@@ -50,25 +73,40 @@ class ChatService:
             List[Dict[str, Any]]: Lista de resultados.
         """
         logger.info(f"Procesando lote de {len(messages)} mensajes")
-        try:
-            tasks = [procesar_solicitud(message) for message in messages]
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-
-            processed = []
-            for i, result in enumerate(results):
-                if isinstance(result, Exception):
-                    logger.error(f"Error procesando mensaje {i}: {str(result)}")
-                    processed.append({
-                        "status": "error",
-                        "message": f"Error: {str(result)}",
-                        "original_message": messages[i]
-                    })
+        
+        # Comprobar si procesar_solicitud es asíncrona o sincrónica
+        import inspect
+        is_async = inspect.iscoroutinefunction(procesar_solicitud)
+        
+        processed = []
+        for i, message in enumerate(messages):
+            try:
+                # Procesar mensaje según si la función es async o no
+                if is_async:
+                    result = await procesar_solicitud(message)
                 else:
-                    processed.append(result)
-            return processed
-        except Exception as e:
-            logger.error(f"Error al procesar lote: {str(e)}")
-            return [{"status": "error", "message": f"Error al procesar lote: {str(e)}"}]
+                    result = procesar_solicitud(message)
+                
+                # Verificar si el resultado es None
+                if result is None:
+                    logger.warning(f"Mensaje {i}: procesar_solicitud devolvió None")
+                    result = {
+                        "status": "success",
+                        "message": "Lo siento, no pude generar una respuesta para esta consulta.",
+                        "input": message
+                    }
+                
+                processed.append(result)
+            except Exception as e:
+                logger.error(f"Error procesando mensaje {i}: {str(e)}")
+                processed.append({
+                    "status": "error",
+                    "message": "Lo siento, tuve un problema procesando esta solicitud.",
+                    "error_details": str(e),
+                    "input": message
+                })
+        
+        return processed
 
     @staticmethod
     async def process_from_file(file_path: str) -> List[Dict[str, Any]]:
