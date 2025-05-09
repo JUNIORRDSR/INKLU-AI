@@ -43,4 +43,4 @@ shadai
 
 
 ##alternativas para wkhtmltopdf
-WeasyPrint
+xhtml2pdf

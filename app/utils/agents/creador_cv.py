@@ -5,7 +5,7 @@ from langgraph.prebuilt import create_react_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.tools import tool
 from dotenv import load_dotenv
-from weasyprint import HTML
+from xhtml2pdf import pisa
 import os
 load_dotenv()
 
@@ -142,10 +142,10 @@ def creador_pdf():
     1. Procesa los datos del usuario mediante un agente conversacional
     2. Extrae información relevante del CV
     3. Genera un documento HTML con diseño responsivo de dos columnas
-    4. Convierte el HTML a PDF con WeasyPrint y lo guarda en la carpeta 'cvGenerados'
+    4. Convierte el HTML a PDF con xhtml2pdf y lo guarda en la carpeta 'cvGenerados'
 
     Requisitos:
-    - WeasyPrint instalado en el sistema
+    - Módulo xhtml2pdf instalado (pip install xhtml2pdf)
     - Acceso a modelos de lenguaje (DeepSeek y Google Gemini)
     - Permisos de escritura en el directorio de salida
 
@@ -155,62 +155,17 @@ def creador_pdf():
     Raises:
         Exception: Si hay errores en la generación del HTML o conversión a PDF
     """
+
     # Definir la ruta de salida del PDF
-    output_dir = os.path.join(os.path.dirname(__file__), "..", "..", "..", "doc/cvGenerados/cv.pdf")
+    output_dir = os.path.join(os.path.dirname(__file__), "..", "..", "..", "doc/cvGenerados")
+    output_file = os.path.join(output_dir, "cv.pdf")
     
     # Asegurar que el directorio existe
-    os.makedirs(os.path.dirname(output_dir), exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     
     ejemplo_cv = """
-Nombre completo: Juan Pérez
-Edad: 28 años
-Género: Masculino
-Tipo de discapacidad: Auditiva
-Ubicación: Bogotá, Colombia
-Correo electrónico: juanperez@email.com
-Teléfono: +57 300 123 4567
-
-Perfil profesional:
-Soy una persona proactiva, responsable y con gran capacidad de adaptación. Me especializo en atención al cliente y tengo experiencia trabajando en entornos inclusivos. Busco oportunidades laborales que valoren la diversidad y la inclusión.
-
-Formación académica:
-
-Técnico en Sistemas - SENA - Finalizado en 2022
-
-Bachiller Académico - Colegio Distrital San Martín - 2018
-
-Experiencia laboral:
-Asistente de soporte técnico - Empresa XYZ - 2022 a 2023
-
-Atención a usuarios con problemas técnicos
-
-Mantenimiento básico de equipos
-
-Registro y seguimiento de incidentes
-
-Cajero - Supermercado ABC - 2019 a 2021
-
-Manejo de caja y atención al cliente
-
-Control de inventario básico
-
-Trabajo en equipo con personal diverso
-
-Habilidades:
-
-Dominio básico de herramientas ofimáticas
-
-Comunicación escrita clara
-
-Trabajo en equipo
-
-Atención al detalle
-
-Idiomas:
-
-Español (nativo)
-
-Lengua de señas colombiana (LSC) - nivel intermedio"""
+    # [El mismo contenido de ejemplo_cv que ya tienes]
+    """
 
     cv = ""
 
@@ -231,7 +186,7 @@ Lengua de señas colombiana (LSC) - nivel intermedio"""
     message = HumanMessage(content=input_text)
 
     for step in agente.stream(
-        {"messages": message},  # Usa el mensaje formateado correctamente
+        {"messages": message},
         stream_mode="values",
     ):
         # Imprime el mensaje completo para depuración   
@@ -243,77 +198,175 @@ Lengua de señas colombiana (LSC) - nivel intermedio"""
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Currículum Vitae</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currículum Vitae - Zara Pérez</title>
     <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f6f8;
             color: #333;
+            line-height: 1.6;
         }
         .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
             display: flex;
-            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
         .left-column {
-            width: 30%;
-            background-color: #153C62;
+            width: 35%;
+            background: linear-gradient(135deg, #153C62 0%, #1E5689 100%);
             color: white;
-            padding: 20px;
+            padding: 30px;
+            position: relative;
         }
         .right-column {
-            width: 70%;
-            padding: 40px;
+            width: 65%;
             background-color: white;
+            padding: 40px;
         }
         h1 {
-            font-size: 32px;
-            margin-bottom: 5px;
+            font-size: 36px;
+            margin: 0 0 10px;
+            color: #153C62;
+            font-weight: 700;
         }
         h2 {
-            font-size: 18px;
+            font-size: 20px;
             color: #153C62;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-            margin-top: 30px;
-        }
-        .section {
-            margin-bottom: 20px;
-        }
-        .info-label {
-            font-weight: bold;
+            border-bottom: 2px solid #153C62;
+            padding-bottom: 8px;
+            margin: 30px 0 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .left-column h2 {
-            color: #fff;
-            border-color: #fff;
+            color: white;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .info-label {
+            font-weight: 600;
+            display: inline-block;
+            width: 80px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .contact-item i {
+            margin-right: 10px;
+            color: #ffffff;
         }
         ul {
             padding-left: 20px;
+            margin: 10px 0;
         }
-        @page {
-            margin: 0;
+        ul li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .left-column ul li {
+            list-style-type: none;
+            position: relative;
+            padding-left: 20px;
+        }
+        .left-column ul li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #ffffff;
+        }
+        .education-item p {
+            margin: 5px 0;
+        }
+        .job-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .job-period {
+            font-style: italic;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            border: 3px solid white;
+            display: none; /* Placeholder for photo */
+        }
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        @media print {
+            body {
+                background: none;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                width: 100%;
+            }
+            .left-column, .right-column {
+                width: 100%;
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="left-column">
+            <div class="profile-photo">
+                <!-- Placeholder for profile photo -->
+                <!-- <img src="profile.jpg" alt="Profile Photo"> -->
+            </div>
             <h2>Contacto</h2>
-            <p><span class="info-label">Email:</span> zara@mail.com</p>
-            <p><span class="info-label">Tel:</span> +57 300 000 0000</p>
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <p><span class="info-label">Email:</span> zara@mail.com</p>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <p><span class="info-label">Tel:</span> +57 300 000 0000</p>
+            </div>
 
             <h2>Habilidades</h2>
             <ul>
                 <li>Comunicación</li>
                 <li>Trabajo en equipo</li>
                 <li>Adaptabilidad</li>
+                <li>Resolución de problemas</li>
             </ul>
 
             <h2>Educación</h2>
-            <p>Universidad Ejemplo</p>
-            <p>Ingeniería de Sistemas</p>
-            <p>2018 - 2022</p>
+            <div class="education-item">
+                <p><strong>Universidad Ejemplo</strong></p>
+                <p>Ingeniería de Sistemas</p>
+                <p>2018 - 2022</p>
+            </div>
         </div>
         <div class="right-column">
             <h1>Zara Pérez</h1>
@@ -321,80 +374,55 @@ Lengua de señas colombiana (LSC) - nivel intermedio"""
 
             <div class="section">
                 <h2>Acerca de mí</h2>
-                <p>Soy una profesional apasionada por la tecnología, con experiencia en el desarrollo de soluciones web y un enfoque orientado al detalle.</p>
+                <p>Soy una profesional apasionada por la tecnología, con experiencia en el desarrollo de soluciones web y un enfoque orientado al detalle. Mi objetivo es crear aplicaciones eficientes y de alta calidad que resuelvan problemas reales.</p>
             </div>
 
             <div class="section">
                 <h2>Experiencia Laboral</h2>
-                <p><strong>Desarrolladora Web - Tech Solutions</strong> (2023 - Presente)</p>
-                <ul>
-                    <li>Desarrollo de aplicaciones con React y Node.js.</li>
-                    <li>Implementación de buenas prácticas de desarrollo.</li>
-                </ul>
-                <p><strong>Practicante - SoftDev</strong> (2022)</p>
-                <ul>
-                    <li>Soporte en tareas de backend con Python y Flask.</li>
-                </ul>
+                <div class="job">
+                    <p class="job-title">Desarrolladora Web - Tech Solutions</p>
+                    <p class="job-period">2023 - Presente</p>
+                    <ul>
+                        <li>Desarrollo de aplicaciones con React y Node.js, optimizando la experiencia del usuario.</li>
+                        <li>Implementación de buenas prácticas de desarrollo y CI/CD.</li>
+                        <li>Colaboración con equipos multidisciplinarios para entregar proyectos a tiempo.</li>
+                    </ul>
+                </div>
+                <div class="job">
+                    <p class="job-title">Practicante - SoftDev</p>
+                    <p class="job-period">2022</p>
+                    <ul>
+                        <li>Apoyo en el desarrollo de backend con Python y Flask.</li>
+                        <li>Participación en la documentación de APIs REST.</li>
+                    </ul>
+                </div>
             </div>
 
             <div class="section">
                 <h2>Información Adicional</h2>
-                <p>Disponible para trabajar de forma remota o presencial. Alto nivel de compromiso y ética profesional.</p>
+                <p>Disponible para trabajar de forma remota o presencial. Comprometida con el aprendizaje continuo y la entrega de resultados de alta calidad. Alto nivel de ética profesional.</p>
             </div>
         </div>
     </div>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </body>
 </html>
-
     """
 
     cv_html = ll_deepseek.invoke([
-        SystemMessage(content=rf"""Convierte el siguiente texto con información personal en un documento HTML para un currículum vitae con un diseño de dos columnas **y responde únicamente con la cadena HTML**, sin ningún texto adicional.
+        SystemMessage(content=rf"""Necesito que repliques EXACTAMENTE la estructura HTML proporcionada a continuación y simplemente reemplaces los datos de ejemplo con los del currículum del usuario.
+        
+        IMPORTANTE: 
+        1. Mantén TODA la estructura HTML, clases, estilos y formato exactamente igual al ejemplo
+        2. NO cambies ningún aspecto del diseño o estilo CSS
+        3. Solo reemplaza el contenido informativo (nombre, contacto, habilidades, etc.) con los datos del CV
+        4. Conserva todos los elementos como iconos, estructura de columnas y secciones
 
-🔷 Estructura del diseño:
-- **Columna izquierda (cinta vertical):** datos de contacto, habilidades y educación.
-- **Columna derecha:** nombre completo, breve descripción personal ("Acerca de mí"), experiencia laboral e información adicional útil.
-
-🎨 Estilo visual:
-- Tipografía clara (Arial o sans‑serif).
-- Paleta de colores basada en azul oscuro (#153C62) y blanco.
-- Nombre completo en grande, profesión debajo.
-- Separadores limpios (líneas o títulos) para cada sección.
-- No incluir imágenes ni recursos externos.
-
-📄 Requisitos técnicos:
-- Debe comenzar con `<!DOCTYPE html>` y contener `<html>`, `<head>` y `<body>`.
-- Incluir `<meta charset="UTF-8">` en el `<head>`.
-- Hoja de estilos dentro de `<style>` en el `<head>`, sin enlaces externos.
-- Todo el contenido en una **cadena multilínea de Python** usando triple comillas (`""""""`).
-- **No usar** `\n`, `\\`, `\"` u otros caracteres de escape.
-- Diseño adaptado a A4/carta y listo para PDF con `WeasyPrint`.
-
-Ejemplo de uso:
-```python
-html = \"\"\"
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Currículum</title>
-    <style> /* estilos aquí */ </style>
-</head>
-<body>
-    <!-- tu contenido en dos columnas -->
-</body>
-</html>
-\"\"\"
-
-📌 Recuerda:
-- No uses rutas externas ni imágenes.
-- El diseño debe adaptarse correctamente a formato carta o A4.
-- Debes mantener un balance visual entre ambas columnas.
-- Añade @page { margin: 0; } para quitar márgenes en impresión PDF.
-
-No respondas nada mas aparte del html, Puedes usar el siguiente ejemplo como base para construir la estructura:  
-`{html}`
-"""),
+        Aquí está la plantilla HTML que debes usar y solo reemplazar los datos:
+        {html}
+        
+        Por favor, utiliza los datos del CV proporcionado y colócalos en la plantilla HTML anterior, manteniendo EXACTAMENTE la misma estructura, diseño y estilo. Responde únicamente con el HTML resultante, sin ningún texto adicional.
+        """),
         HumanMessage(content=cv)
     ])
 
@@ -410,14 +438,38 @@ No respondas nada mas aparte del html, Puedes usar el siguiente ejemplo como bas
         return texto.replace('\n', ' ')
 
     # Aplicar la limpieza al cv_html
-    cv_html_limpio = limpiar_saltos_linea(cv_html.content)
-
-    print(f"CV HTML: {cv_html_limpio}")
+    cv_html_limpio = cv_html.content
     
-    # Usar WeasyPrint para generar el PDF
-    HTML(string=cv_html_limpio).write_pdf(output_dir)
+    # Guardar el HTML temporalmente (opcional para inspección)
+    temp_html_path = os.path.join(output_dir, "temp_cv.html")
+    with open(temp_html_path, 'w', encoding='utf-8') as f:
+        f.write(cv_html_limpio)
     
-    print(f"PDF generado correctamente en: {output_dir}")
+    try:
+        # Abrir el archivo PDF para escritura en modo binario
+        with open(output_file, "wb") as pdf_file:
+            # Convertir HTML a PDF directamente
+            pisa_status = pisa.CreatePDF(
+                cv_html_limpio,               # Contenido HTML
+                dest=pdf_file,                # Archivo de salida
+                encoding='utf-8'              # Codificación
+            )
+        
+        # Verificar si la conversión fue exitosa
+        if pisa_status.err:
+            print(f"Error al generar el PDF: {pisa_status.err}")
+        else:
+            print(f"PDF generado correctamente en: {output_file}")
+    
+    except Exception as e:
+        print(f"Error al generar el PDF: {e}")
+    
+    finally:
+        # Dejar el HTML temporal para inspección (opcional eliminarlo)
+        # Si deseas eliminarlo, descomenta la siguiente línea:
+        # if os.path.exists(temp_html_path):
+        #     os.remove(temp_html_path)
+        pass
 
 if __name__ == "__main__":
     

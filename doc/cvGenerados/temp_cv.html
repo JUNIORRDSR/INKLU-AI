@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currículum Vitae - Juan Pérez</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            display: flex;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .left-column {
+            width: 35%;
+            background: linear-gradient(135deg, #153C62 0%, #1E5689 100%);
+            color: white;
+            padding: 30px;
+            position: relative;
+        }
+        .right-column {
+            width: 65%;
+            background-color: white;
+            padding: 40px;
+        }
+        h1 {
+            font-size: 36px;
+            margin: 0 0 10px;
+            color: #153C62;
+            font-weight: 700;
+        }
+        h2 {
+            font-size: 20px;
+            color: #153C62;
+            border-bottom: 2px solid #153C62;
+            padding-bottom: 8px;
+            margin: 30px 0 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .left-column h2 {
+            color: white;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .info-label {
+            font-weight: 600;
+            display: inline-block;
+            width: 80px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .contact-item i {
+            margin-right: 10px;
+            color: #ffffff;
+        }
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        ul li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .left-column ul li {
+            list-style-type: none;
+            position: relative;
+            padding-left: 20px;
+        }
+        .left-column ul li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #ffffff;
+        }
+        .education-item p {
+            margin: 5px 0;
+        }
+        .job-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .job-period {
+            font-style: italic;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            border: 3px solid white;
+            display: none; /* Placeholder for photo */
+        }
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        @media print {
+            body {
+                background: none;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                width: 100%;
+            }
+            .left-column, .right-column {
+                width: 100%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-column">
+            <div class="profile-photo">
+                <!-- Placeholder for profile photo -->
+                <!-- <img src="profile.jpg" alt="Profile Photo"> -->
+            </div>
+            <h2>Contacto</h2>
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <p><span class="info-label">Email:</span> juan.perez@example.com</p>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <p><span class="info-label">Tel:</span> +57 310 123 4567</p>
+            </div>
+
+            <h2>Habilidades</h2>
+            <ul>
+                <li>Desarrollo web</li>
+                <li>JavaScript</li>
+                <li>React</li>
+                <li>Node.js</li>
+                <li>Bases de datos</li>
+            </ul>
+
+            <h2>Educación</h2>
+            <div class="education-item">
+                <p><strong>Universidad Nacional</strong></p>
+                <p>Ingeniería de Sistemas</p>
+                <p>2015 - 2020</p>
+            </div>
+        </div>
+        <div class="right-column">
+            <h1>Juan Pérez</h1>
+            <h2>Ingeniero de Software</h2>
+
+            <div class="section">
+                <h2>Acerca de mí</h2>
+                <p>Ingeniero de software con 4 años de experiencia en desarrollo web full stack. Especializado en JavaScript, React y Node.js. Apasionado por crear soluciones tecnológicas innovadoras y escalables.</p>
+            </div>
+
+            <div class="section">
+                <h2>Experiencia Laboral</h2>
+                <div class="job">
+                    <p class="job-title">Desarrollador Senior - TechCorp</p>
+                    <p class="job-period">2021 - Presente</p>
+                    <ul>
+                        <li>Liderar el desarrollo de aplicaciones web con React y Node.js</li>
+                        <li>Diseñar arquitecturas escalables para sistemas empresariales</li>
+                        <li>Mentoría de desarrolladores junior</li>
+                    </ul>
+                </div>
+                <div class="job">
+                    <p class="job-title">Desarrollador Web - Digital Solutions</p>
+                    <p class="job-period">2020 - 2021</p>
+                    <ul>
+                        <li>Desarrollo de interfaces de usuario con React</li>
+                        <li>Implementación de APIs REST con Express</li>
+                        <li>Optimización de rendimiento de aplicaciones</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Información Adicional</h2>
+                <p>Certificado en Desarrollo Web Full Stack por Platzi. Dominio avanzado de inglés. Disponibilidad para viajar. Interés en proyectos de inteligencia artificial y machine learning.</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>
