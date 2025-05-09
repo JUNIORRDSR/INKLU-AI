@@ -22,12 +22,13 @@ const SessionManager = {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  
   // Check if user is authenticated
-  if (typeof SessionManager !== "undefined" && !SessionManager.isAuthenticated()) {
+  //if (typeof SessionManager !== "undefined" && !SessionManager.isAuthenticated()) {
     // Redirect to login page
-    window.location.href = "login.html"
-    return
-  }
+    //window.location.href = "login.html"
+    //return
+  //}
 
   // DOM Elements
   const chatMessages = document.getElementById("chatMessages")

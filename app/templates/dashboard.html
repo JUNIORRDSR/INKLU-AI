@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - InklúAI</title>
+    <title>Inicio - InklúAI</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
 </head>
 <body>
     <header class="dashboard-header">
-        <div class="logo">InklúAI</div>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='img/inklufnd.png') }}" alt="InklúAI Logo" class="logo-img">
+            <div class="logo-text">InKlú-AI</div>
+        </div>
         <nav class="main-nav">
             <ul>
-                <li><a href="#" class="active">Panel de Control</a></li>
-                <li><a href="#">Perfil</a></li>
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#">Chat con Inklú</a></li>
                 <li><a href="#">Configuración</a></li>
             </ul>
         </nav>
@@ -25,27 +28,48 @@
     </header>
 
     <main class="dashboard-content">
-        <div class="welcome-section">
-            <h1>Bienvenido a tu Panel de Control</h1>
-            <p>Has iniciado sesión correctamente en tu cuenta.</p>
-        </div>
+        <h1 class="ofertas-titulo">Ofertas de Trabajo</h1>
         
-        <div class="dashboard-cards">
-            <div class="dashboard-card">
-                <h2>Información de la Cuenta</h2>
-                <div class="card-content">
-                    <p><strong>Nombre de usuario:</strong> <span id="profileUsername">usuario</span></p>
-                    <p><strong>Correo electrónico:</strong> <span id="profileEmail">correo@ejemplo.com</span></p>
-                    <p><strong>Cuenta creada:</strong> <span id="profileCreated">1 de enero de 2023</span></p>
+        <div class="job-cards">
+            <div class="job-card">
+                <h2 class="job-title">Analista de Datos</h2>
+                <div class="company-name">DataTech Solutions</div>
+                <div class="location">Bogotá, Colombia</div>
+                <span class="job-type-badge">Tiempo completo</span>
+                <p class="job-description">
+                    Buscamos analista de datos con experiencia en Python y SQL
+                </p>
+                <div class="job-footer">
+                    <span class="publish-date">Publicado: 9/11/2023</span>
+                    <a href="#" class="ver-detalles">Ver detalles</a>
                 </div>
             </div>
-            
-            <div class="dashboard-card">
-                <h2>Configuración de Seguridad</h2>
-                <div class="card-content">
-                    <p>Administra la configuración de seguridad de tu cuenta</p>
-                    <button class="auth-button secondary" onclick="window.location.href='reset-password-request.html'">Cambiar Contraseña</button>
-                    <button class="auth-button secondary" onclick="window.location.href='#'">Actualizar Correo</button>
+
+            <div class="job-card">
+                <h2 class="job-title">Desarrollador Web Frontend</h2>
+                <div class="company-name">Creative Box</div>
+                <div class="location">Medellín, Colombia</div>
+                <span class="job-type-badge">Tiempo completo</span>
+                <p class="job-description">
+                    Se necesita desarrollador con conocimientos en React y TailwindCSS
+                </p>
+                <div class="job-footer">
+                    <span class="publish-date">Publicado: 7/11/2023</span>
+                    <a href="#" class="ver-detalles">Ver detalles</a>
+                </div>
+            </div>
+
+            <div class="job-card">
+                <h2 class="job-title">Asistente Administrativo</h2>
+                <div class="company-name">Corporación Inclusive</div>
+                <div class="location">Cali, Colombia</div>
+                <span class="job-type-badge">Tiempo parcial</span>
+                <p class="job-description">
+                    Oportunidad para personas con discapacidad motriz. Ambiente adaptado.
+                </p>
+                <div class="job-footer">
+                    <span class="publish-date">Publicado: 4/11/2023</span>
+                    <a href="#" class="ver-detalles">Ver detalles</a>
                 </div>
             </div>
         </div>
@@ -53,23 +77,5 @@
     
     <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-    <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Add chat button to dashboard
-    const dashboardCards = document.querySelector(".dashboard-cards");
-    if (dashboardCards) {
-      const chatCard = document.createElement("div");
-      chatCard.className = "dashboard-card";
-      chatCard.innerHTML = `
-        <h2>Asistente IA</h2>
-        <div class="card-content">
-          <p>Chatea con nuestro asistente de IA para obtener ayuda con cualquier pregunta que tengas.</p>
-          <button class="auth-button primary" onclick="window.location.href='chat.html'">Iniciar Chat</button>
-        </div>
-      `;
-      dashboardCards.appendChild(chatCard);
-    }
-  });
-</script>
 </body>
 </html>

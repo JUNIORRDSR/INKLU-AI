@@ -9,6 +9,8 @@
   padding: 0;
   height: 100vh;
   overflow: hidden;
+  background-color: #f5f5f5;
+  min-height: 100vh;
 }
 
 /* Chat header */
@@ -505,4 +507,93 @@
   .recording-button {
     padding: 0.5rem 1rem;
   }
+}
+
+.assistant-profile {
+  background: linear-gradient(135deg, var(--azulmio) 0%, var(--moradomio) 100%);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+}
+
+.assistant-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: white;
+}
+
+.assistant-info h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.assistant-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.suggestions-container {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.suggestion-button {
+  background: white;
+  border: 1px solid var(--moradomio);
+  color: var(--moradomio);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.suggestion-button:hover {
+  background: var(--moradomio);
+  color: white;
+}
+
+.chat-input-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: white;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.message-input {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 0.75rem;
+  resize: none;
+  outline: none;
+}
+
+.send-button {
+  background: var(--moradomio);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+}
+
+.send-button svg {
+  width: 20px;
+  height: 20px;
 }
