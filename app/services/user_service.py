@@ -1,6 +1,8 @@
 from app.models.user import User
 from app.schemas.user_schema import UserSchema
 from app.extensions import db
+from werkzeug.security import check_password_hash
+from flask_jwt_extended import create_access_token
 
 class UserService:
     @staticmethod
@@ -36,14 +38,31 @@ class UserService:
     @staticmethod
     def get_user_by_email(email):
         """Obtiene un usuario por su correo electrónico"""
-        # No podemos buscar directamente por el correo encriptado
-        # Tenemos que obtener todos y filtrar
         users = User.query.all()
         for user in users:
             if user.Correo == email:
                 user_schema = UserSchema()
                 return user_schema.dump(user)
         return None
+
+    @staticmethod
+    def login_user(email, password):
+        """Autentica a un usuario y devuelve un token JWT si es exitoso"""
+        try:
+            user = User.query.filter_by(Correo=email).first()
+            if not user:
+                return {"error": "Correo no encontrado"}, None
+            
+            if not check_password_hash(user.Contrasena, password):
+                return {"error": "Contraseña incorrecta"}, None
+            
+            # Crear un token JWT con información del usuario
+            access_token = create_access_token(identity=user.id)
+            user_schema = UserSchema()
+            user_data = user_schema.dump(user)
+            return {"message": "Login exitoso", "user": user_data}, access_token
+        except Exception as e:
+            return {"error": str(e)}, None
 
     @staticmethod
     def update_user(user_id, data):

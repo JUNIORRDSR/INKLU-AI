@@ -40,8 +40,23 @@ const UserStorage = {
     console.log("User added:", username, email, password)
     return { username, email } // Return a mock user object
   },
-  verifyCredentials: (identifier, password) => {
+  verifyCredentials: async(identifier, password) => {
     // Replace with actual credential verification logic
+    const data = {
+      Correo: identifier,
+      Contraseña: password
+      };
+      console.log(data)
+      // Call the loginUser function with the data object
+      try {
+        const response = await registerUser(data);
+        console.log(response);
+      } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+      }
+
+    console.log("User:", identifier, password)
+    return { username, email } // Return a mock user object
     return null
   },
 }
@@ -356,7 +371,7 @@ function setupLoginForm() {
 
       // Redirect to dashboard
       setTimeout(() => {
-        window.location.href = "dashboard.html"
+        window.location.href = "dashboard"
       }, 1500)
     } else {
       showNotification("Invalid username/email or password", "error")

@@ -55,3 +55,26 @@ def list_users():
         return jsonify(users), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@users_bp.route('/login', methods=['POST'])
+def login():
+    try:
+        data = request.get_json()
+        email = data.get('Correo')
+        password = data.get('Contraseña')
+        
+        if not email or not password:
+            return jsonify({"error": "Correo y contraseña son requeridos"}), 400
+        
+        result, access_token = UserService.login_user(email, password)
+        
+        if access_token:
+            return jsonify({
+                "message": result["message"],
+                "user": result["user"],
+                "access_token": access_token
+            }), 200
+        else:
+            return jsonify({"error": result["error"]}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
