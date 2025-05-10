@@ -30,10 +30,6 @@ CONFIG = {
         "temperature": 0.7,
         "max_tokens": 1000,
     },
-    "adzuna": {
-        "app_id": os.getenv("ADZUNA_APP_ID"),
-        "app_key": os.getenv("ADZUNA_APP_KEY"),
-    },
     "google": {
         "api_key": os.getenv("GOOGLE_API_KEY"),
         "cse_id": os.getenv("GOOGLE_CSE_ID"),
@@ -56,105 +52,35 @@ orquestador = ChatDeepSeek(
 
 # Modelo para parámetros de búsqueda
 class BusquedaParams(BaseModel):
-    keywords: list[str] = Field(default=["discapacidad"], description="Palabras clave")
+    query: str = Field(..., description="Consulta de búsqueda")
     location: str | None = Field(None, description="Ubicación")
-    companies: list[str] | None = Field(None, description="Empresas específicas")
+    disability_type: str | None = Field(None, description="Tipo de discapacidad")
+    job_sector: str | None = Field(None, description="Sector laboral")
 
 @tool
-async def buscar_empleos(params: BusquedaParams) -> Dict[str, Any]:
-    """Busca empleos inclusivos usando Adzuna."""
-    logger.info("Tool BuscarEmpleos: Iniciando")
-    base_url = "https://api.adzuna.com/v1/api/jobs"
-
-    if not CONFIG["adzuna"]["app_id"] or not CONFIG["adzuna"]["app_key"]:
-        logger.error("Tool BuscarEmpleos: Claves de Adzuna no configuradas")
-        return {
-            "status": "error",
-            "message": (
-                "⚠️ API de Adzuna no configurada. Agrega en .env:\n"
-                "- ADZUNA_APP_ID=tu_id\n"
-                "- ADZUNA_APP_KEY=tu_clave\n"
-                "Consulta https://developer.adzuna.com/"
-            ),
-            "tips": (
-                "- Regístrate en Adzuna para obtener claves.\n"
-                "- Usa portales alternativos como Computrabajo."
-            ),
-        }
-
-    query = " ".join(params.keywords) + " inclusivo"
-    if params.companies:
-        query += " " + " ".join(params.companies)
-
-    api_params = {
-        "app_id": CONFIG["adzuna"]["app_id"],
-        "app_key": CONFIG["adzuna"]["app_key"],
-        "what": query,
-        "results_per_page": 5,
-    }
-    if params.location:
-        api_params["where"] = params.location
-
-    try:
-        response = requests.get(f"{base_url}/search/1", params=api_params, timeout=10)
-        response.raise_for_status()
-        data = response.json()
-
-        if not data.get("results"):
-            logger.info("Tool BuscarEmpleos: No se encontraron empleos")
-            return {
-                "status": "success",
-                "message": (
-                    "| **Vacante** | **Empresa** | **Ubicación** | **Enlace** |\n"
-                    "|-------------|-------------|---------------|------------|\n"
-                    "| No se encontraron empleos | - | - | - |\n\n"
-                    "Intenta con otras palabras clave o ubicación."
-                ),
-                "tips": (
-                    "- Especifica el tipo de discapacidad (ej. visual).\n"
-                    "- Prueba ubicaciones más amplias (ej. Colombia)."
-                ),
-            }
-
-        results = ["| **Vacante** | **Empresa** | **Ubicación** | **Enlace** |"]
-        results.append("|-------------|-------------|---------------|------------|")
-        for job in data["results"]:
-            title = job.get("title", "Sin título")
-            company = job.get("company", {}).get("display_name", "Desconocida")
-            location = job.get("location", {}).get("display_name", "No especificada")
-            url = job.get("redirect_url", "No disponible")
-            results.append(f"| {title} | {company} | {location} | [Aplicar]({url}) |")
-        results.append("")
-        results.append("**Nota**: Verifica la accesibilidad de cada vacante.")
-
-        logger.info("Tool BuscarEmpleos: Empleos encontrados")
-        return {
-            "status": "success",
-            "message": "\n".join(results),
-            "tips": (
-                "- Contacta a la empresa para confirmar accesibilidad.\n"
-                "- Usa INCI (https://www.inci.gov.co/) para más opciones."
-            ),
-        }
-
-    except requests.RequestException as e:
-        logger.error(f"Tool BuscarEmpleos: Error en Adzuna: {str(e)}")
-        return {
-            "status": "error",
-            "message": f"No se pudo conectar con Adzuna: {str(e)}.",
-            "tips": (
-                "- Revisa tu conexión a internet.\n"
-                "- Usa portales como Magneto o Incluyeme."
-            ),
-        }
-
-@tool
-async def google_search_empleos(query: str) -> Dict[str, Any]:
+async def google_search_empleos(params: BusquedaParams) -> Dict[str, Any]:
     """Busca empleos inclusivos en la web usando Google Custom Search."""
-    logger.info("Tool GoogleSearch: Iniciando")
+    logger.info(f"Tool GoogleSearch: Iniciando con parámetros: {params}")
+    
     base_url = "https://www.googleapis.com/customsearch/v1"
 
-    modified_query = f"{query} empleo discapacidad inclusivo"
+    # Construir una consulta más completa
+    modified_query = params.query
+    
+    if params.location:
+        modified_query += f" en {params.location}"
+    
+    if params.disability_type:
+        modified_query += f" para personas con discapacidad {params.disability_type}"
+    else:
+        modified_query += " para personas con discapacidad"
+        
+    if params.job_sector:
+        modified_query += f" sector {params.job_sector}"
+        
+    modified_query += " empleo inclusivo"
+
+    logger.info(f"Tool GoogleSearch: Consulta modificada: {modified_query}")
 
     if not CONFIG["google"]["api_key"] or not CONFIG["google"]["cse_id"]:
         logger.error("Tool GoogleSearch: Claves de Google no configuradas")
@@ -172,19 +98,26 @@ async def google_search_empleos(query: str) -> Dict[str, Any]:
             ),
         }
 
-    params = {
+    search_params = {
         "q": modified_query,
         "key": CONFIG["google"]["api_key"],
         "cx": CONFIG["google"]["cse_id"],
-        "num": 5,
+        "num": 8,  # Aumentado para tener más resultados
+        "safe": "active",
     }
 
     try:
-        response = requests.get(base_url, params=params, timeout=10)
+        logger.info(f"Tool GoogleSearch: Enviando solicitud con parámetros: {search_params}")
+        response = requests.get(base_url, params=search_params, timeout=15)
+        
+        logger.info(f"Tool GoogleSearch: Respuesta status={response.status_code}")
+        if response.status_code != 200:
+            logger.error(f"Tool GoogleSearch: Error de Google: {response.text}")
+            
         response.raise_for_status()
         data = response.json()
 
-        if "items" not in data:
+        if "items" not in data or not data["items"]:
             logger.info("Tool GoogleSearch: No se encontraron resultados")
             return {
                 "status": "success",
@@ -195,28 +128,43 @@ async def google_search_empleos(query: str) -> Dict[str, Any]:
                     "Intenta con una consulta más específica."
                 ),
                 "tips": (
-                    "- Usa términos como 'empleo inclusivo Barranquilla'.\n"
-                    "- Explora fundaciones como Saldarriaga Concha."
+                    "- Usa términos como 'empleo inclusivo' + ubicación.\n"
+                    "- Busca por programas de inclusión laboral en tu zona.\n"
+                    "- Visita portales especializados como Incluyeme.com"
                 ),
             }
 
         results = ["| **Título** | **Enlace** | **Descripción** |"]
         results.append("|------------|------------|-----------------|")
+        
         for item in data["items"]:
-            title = item.get("title", "Sin título")
+            title = item.get("title", "Sin título").replace("|", "-")
             link = item.get("link", "No disponible")
-            snippet = item.get("snippet", "Sin descripción")[:100] + "..."
+            snippet = item.get("snippet", "Sin descripción").replace("|", "-").replace("\n", " ")
+            if len(snippet) > 100:
+                snippet = snippet[:100] + "..."
             results.append(f"| {title} | [Ver]({link}) | {snippet} |")
+        
+        # Agregar información adicional relevante
         results.append("")
-        results.append("**Nota**: Revisa cada enlace para confirmar relevancia.")
-
-        logger.info("Tool GoogleSearch: Resultados obtenidos")
+        results.append("### Recursos adicionales para búsqueda de empleo inclusivo:")
+        
+        if params.location and "colombia" in params.location.lower():
+            results.append("- [Servicio Público de Empleo](https://www.serviciodeempleo.gov.co/) - Portal oficial de empleo")
+            results.append("- [SENA](https://www.sena.edu.co/) - Formación y empleo")
+            results.append("- [Pacto de Productividad](https://www.pactodeproductividad.com/) - Inclusión laboral")
+        
+        results.append("- [Incluyeme](https://www.incluyeme.com/) - Portal especializado en empleos para personas con discapacidad")
+        
+        logger.info("Tool GoogleSearch: Resultados obtenidos exitosamente")
         return {
             "status": "success",
             "message": "\n".join(results),
             "tips": (
-                "- Verifica la fecha de publicación de los enlaces.\n"
-                "- Contacta fundaciones para apoyo adicional."
+                "- Revisa las fechas de publicación de las ofertas.\n"
+                "- Contacta directamente a las empresas que muestran interés en inclusión.\n"
+                "- Considera enviar tu CV a fundaciones especializadas en inclusión laboral.\n"
+                "- Actualiza tu perfil en LinkedIn mencionando tus habilidades específicas."
             ),
         }
 
@@ -226,38 +174,41 @@ async def google_search_empleos(query: str) -> Dict[str, Any]:
             "status": "error",
             "message": f"No se pudo conectar con Google: {str(e)}.",
             "tips": (
-                "- Revisa tu conexión a internet.\n"
-                "- Usa Incluyeme o Servicio Público de Empleo."
+                "- Verifica tu conexión a internet.\n"
+                "- Intenta nuevamente más tarde.\n"
+                "- Como alternativa, visita directamente portales de empleo inclusivo."
             ),
         }
 
-# Configurar agente
-tools = [buscar_empleos, google_search_empleos]
+# Configurar agente con solo Google Search
+tools = [google_search_empleos]
 agent = create_react_agent(
     orquestador,
     tools,
-    prompt=SystemMessage(content="""Eres un asistente especializado en buscar empleos inclusivos.
+    prompt=SystemMessage(content="""Eres un asistente especializado en buscar empleos inclusivos para personas con discapacidad.
 
 Instrucciones:
 1. Analiza la consulta para identificar:
-   - Tipo de discapacidad (física, visual, etc.).
+   - Tipo de discapacidad (física, visual, auditiva, etc.).
    - Ubicación (país, ciudad).
-   - Empresas específicas (si se mencionan).
-   - Palabras clave (sector, tipo de trabajo).
+   - Sector laboral (si se menciona).
+   - Palabras clave relevantes.
 
-2. Usa **buscar_empleos** para Adzuna:
-   - Incluye discapacidad y palabras clave en keywords.
-   - Usa la ubicación como location.
-   - Incluye empresas en companies si se mencionan.
+2. Usa **google_search_empleos** para buscar información:
+   - Incluye la consulta principal como query.
+   - Especifica la ubicación como location.
+   - Indica el tipo de discapacidad en disability_type.
+   - Añade el sector laboral en job_sector si corresponde.
 
-3. Usa **google_search_empleos** para resultados web.
+3. Presenta los resultados de forma clara:
+   - Muestra las opciones en formato tabla.
+   - Proporciona enlaces útiles.
+   - Sugiere recursos adicionales relevantes.
 
-4. Combina resultados:
-   - Prioriza empleos inclusivos de Adzuna.
-   - Complementa con enlaces web relevantes.
-   - Formatea en una tabla markdown.
-
-5. Si ambas APIs fallan, proporciona recursos alternativos.
+4. Si la búsqueda no produce resultados:
+   - Ofrece alternativas y consejos prácticos.
+   - Menciona portales específicos para empleo inclusivo.
+   - Sugiere organizaciones que apoyan la inclusión laboral.
 """),
 )
 
@@ -296,10 +247,11 @@ async def buscar_oportunidades(consulta: str) -> Dict[str, Any]:
             logger.error("Agente Orquestador: No se obtuvieron resultados")
             return {
                 "status": "error",
-                "message": "No se encontraron resultados.",
+                "message": "No se encontraron resultados para tu búsqueda.",
                 "tips": (
-                    "- Usa términos más específicos (ej. 'empleo visual Barranquilla').\n"
-                    "- Visita INCI: https://www.inci.gov.co/inclusion-laboral"
+                    "- Usa términos más específicos.\n"
+                    "- Intenta con diferentes ubicaciones.\n"
+                    "- Visita directamente portales especializados en inclusión laboral."
                 ),
             }
 
@@ -314,7 +266,8 @@ async def buscar_oportunidades(consulta: str) -> Dict[str, Any]:
                 "message": "No se encontraron resultados válidos.",
                 "tips": (
                     "- Revisa la conexión a internet.\n"
-                    "- Usa portales como Computrabajo o Magneto."
+                    "- Verifica que las claves de API estén configuradas correctamente.\n"
+                    "- Usa portales como Computrabajo o LinkedIn con filtros específicos."
                 ),
             }
 
@@ -326,7 +279,8 @@ async def buscar_oportunidades(consulta: str) -> Dict[str, Any]:
             "tips": (
                 "- Contacta fundaciones como Saldarriaga Concha o Best Buddies.\n"
                 "- Usa portales como Incluyeme.com o Servicio Público de Empleo.\n"
-                "- Revisa programas de inclusión en empresas como Bancolombia."
+                "- Revisa programas de inclusión en empresas como Bancolombia, Grupo Éxito o Sodexo.\n"
+                "- Actualiza tu CV destacando tus habilidades específicas."
             ),
         }
 
@@ -341,7 +295,39 @@ async def buscar_oportunidades(consulta: str) -> Dict[str, Any]:
             ),
         }
 
+def test_google_search():
+    """Prueba directa de Google Search API para verificar su funcionamiento."""
+    print("=== PRUEBA DE GOOGLE SEARCH API ===")
+    
+    params = {
+        "q": "empleos discapacidad Colombia",
+        "key": CONFIG["google"]["api_key"],
+        "cx": CONFIG["google"]["cse_id"],
+        "num": 2,
+    }
+    
+    try:
+        response = requests.get("https://www.googleapis.com/customsearch/v1", 
+                               params=params, 
+                               timeout=10)
+        print(f"Status: {response.status_code}")
+        print(f"Respuesta: {response.text[:300]}...")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if "items" in data and data["items"]:
+                print("\nResultados encontrados:")
+                for i, item in enumerate(data["items"], 1):
+                    print(f"{i}. {item.get('title')} - {item.get('link')}")
+            else:
+                print("\nNo se encontraron resultados")
+    except Exception as e:
+        print(f"Error: {str(e)}")
+
 if __name__ == "__main__":
+    # Descomentar para probar directamente Google Search API
+    # test_google_search()
+    
     consulta = input("Introduce tu búsqueda de empleo: ")
     if not consulta:
         consulta = "Empleos inclusivos en Colombia para discapacidad física"

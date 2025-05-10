@@ -8,13 +8,13 @@ flask_login
 Flask-WTF
 flask-jwt-extended
 flask-cors
-Flask-Async
+flask-migrate
+Flask[Async]
 
 # base de datos dependencias
 sqlalchemy
 flask-sqlalchemy
 flask-marshmallow
-flask-migrate
 marshmallow
 marshmallow-sqlalchemy
 pyodbc
@@ -38,9 +38,7 @@ langchain-google-vertexai
 langchain-community
 langchain-tavily
 SpeechRecognition
-PyAudio
 pyttsx3
-pdfkit
 google-search-results
 shadai
 
