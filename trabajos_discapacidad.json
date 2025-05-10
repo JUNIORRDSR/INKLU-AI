@@ -1,0 +1,195 @@
+{
+  "fecha_busqueda": "20250510_001928",
+  "resultados_crudos": [
+    {
+      "consulta": "ofertas de empleo en Barranquilla para personas con discapacidad visual",
+      "resultados": {
+        "kind": "customsearch#search",
+        "url": {
+          "type": "application/json",
+          "template": "https://www.googleapis.com/customsearch/v1?q={searchTerms}&num={count?}&start={startIndex?}&lr={language?}&safe={safe?}&cx={cx?}&sort={sort?}&filter={filter?}&gl={gl?}&cr={cr?}&googlehost={googleHost?}&c2coff={disableCnTwTranslation?}&hq={hq?}&hl={hl?}&siteSearch={siteSearch?}&siteSearchFilter={siteSearchFilter?}&exactTerms={exactTerms?}&excludeTerms={excludeTerms?}&linkSite={linkSite?}&orTerms={orTerms?}&dateRestrict={dateRestrict?}&lowRange={lowRange?}&highRange={highRange?}&searchType={searchType}&fileType={fileType?}&rights={rights?}&imgSize={imgSize?}&imgType={imgType?}&imgColorType={imgColorType?}&imgDominantColor={imgDominantColor?}&alt=json"
+        },
+        "queries": {
+          "request": [
+            {
+              "title": "Google Custom Search - ofertas de empleo en Barranquilla para personas con discapacidad visual",
+              "totalResults": "2",
+              "searchTerms": "ofertas de empleo en Barranquilla para personas con discapacidad visual",
+              "count": 2,
+              "startIndex": 1,
+              "inputEncoding": "utf8",
+              "outputEncoding": "utf8",
+              "safe": "off",
+              "cx": "20376f21087844b39"
+            }
+          ]
+        },
+        "context": {
+          "title": "hackaton",
+          "facets": [
+            [
+              {
+                "anchor": "palabras_clave",
+                "label": "palabras_clave",
+                "label_with_op": "more:palabras_clave"
+              }
+            ]
+          ]
+        },
+        "searchInformation": {
+          "searchTime": 0.195891,
+          "formattedSearchTime": "0.20",
+          "totalResults": "2",
+          "formattedTotalResults": "2"
+        },
+        "items": [
+          {
+            "kind": "customsearch#result",
+            "title": "Curso de operador de montacarga: Cómo hacerlo | Indeed.com",
+            "htmlTitle": "Curso de operador de montacarga: Cómo hacerlo | Indeed.com",
+            "link": "https://www.indeed.com/orientacion-profesional/como-encontrar-empleo/curso-operador-montacarga",
+            "displayLink": "www.indeed.com",
+            "snippet": "Mar 14, 2025 ... Al aprobar el certificado, recibirás una licencia de operador de montacarga que podrás mostrar a tu empleador o en una oferta de trabajo.Te ...",
+            "htmlSnippet": "Mar 14, 2025 <b>...</b> Al aprobar el certificado, recibirás una licencia de operador de montacarga que podrás mostrar <b>a</b> tu empleador o en una <b>oferta de trabajo</b>.Te&nbsp;...",
+            "formattedUrl": "https://www.indeed.com/...encontrar-empleo/curso-operador-montacarga",
+            "htmlFormattedUrl": "https://www.indeed.com/...en<b>con</b>trar-<b>empleo</b>/curso-operador-montacarga",
+            "pagemap": {
+              "cse_thumbnail": [
+                {
+                  "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM6TImSEnqZ6O4AUOdnWndd_yy0SOD5xCQVE28Sv5mHFtWzcn4i0koRfM&s",
+                  "width": "300",
+                  "height": "168"
+                }
+              ],
+              "metatags": [
+                {
+                  "og:image": "https://images.ctfassets.net/pdf29us7flmy/15oQ2JIYhydw5FFX89zhis/70dfc967bfe63b4ff37691963149d7fa/5.svg?w=720&q=100&fm=jpg",
+                  "og:type": "article",
+                  "twitter:card": "summary_large_image",
+                  "twitter:title": "Curso de operador de montacarga: Cómo hacerlo",
+                  "og:site_name": "Guía profesional de Indeed",
+                  "dd-trace-id": "14428323702477581119",
+                  "viewport": "width=device-width, initial-scale=1",
+                  "og:title": "Curso de operador de montacarga: Cómo hacerlo",
+                  "og:locale": "es_US",
+                  "og:url": "https://www.indeed.com/orientacion-profesional/como-encontrar-empleo/curso-operador-montacarga",
+                  "og:description": "¿Te interesa hacer un curso de operador de montacarga? Aquí explicamos qué es un operador de montacarga y otras preguntas frecuentes sobre la ocupación.",
+                  "dd-trace-time": "1746417276158"
+                }
+              ],
+              "cse_image": [
+                {
+                  "src": "https://images.ctfassets.net/pdf29us7flmy/15oQ2JIYhydw5FFX89zhis/70dfc967bfe63b4ff37691963149d7fa/5.svg?w=720&q=100&fm=jpg"
+                }
+              ]
+            },
+            "labels": [
+              {
+                "name": "palabras_clave",
+                "displayName": "palabras_clave",
+                "label_with_op": "more:palabras_clave"
+              }
+            ]
+          },
+          {
+            "kind": "customsearch#result",
+            "title": "¿Cómo tramitar la Certificación de Discapacidad en Colombia ...",
+            "htmlTitle": "¿Cómo tramitar la Certificación de <b>Discapacidad</b> en Colombia ...",
+            "link": "https://www.incluyeme.com/como-tramitar-la-certificacion-de-discapacidad-en-colombia/",
+            "displayLink": "www.incluyeme.com",
+            "snippet": "... a personas como tú en su búsqueda de empleo. Nuestra plataforma ofrece oportunidades laborales para personas con diversas condiciones y habilidades. Te ...",
+            "htmlSnippet": "... <b>a personas</b> como tú en su búsqueda de <b>empleo</b>. Nuestra plataforma ofrece oportunidades laborales <b>para personas</b> con diversas condiciones y habilidades. Te&nbsp;...",
+            "formattedUrl": "https://www.incluyeme.com/como-tramitar-la-certificacion-de-discapacidad...",
+            "htmlFormattedUrl": "https://www.incluyeme.com/como-tramitar-la-certificacion-de-<b>discapacidad</b>...",
+            "pagemap": {
+              "cse_thumbnail": [
+                {
+                  "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGV746t5bX8V3yybctN3nsxZ5_rS6XQUXQrZJRoYGUvdDbRXYWakH9JQ&s",
+                  "width": "428",
+                  "height": "118"
+                }
+              ],
+              "metatags": [
+                {
+                  "og:image": "https://www.incluyeme.com/wp-content/uploads/2023/02/Accesibilidad.jpg",
+                  "og:type": "article",
+                  "article:published_time": "2018-10-25T18:27:24+00:00",
+                  "og:image:width": "1610",
+                  "twitter:card": "summary_large_image",
+                  "og:site_name": "Incluyeme.com",
+                  "author": "admin",
+                  "og:title": "¿Cómo tramitar la Certificación de Discapacidad en Colombia?",
+                  "og:image:height": "443",
+                  "twitter:label1": "Escrito por",
+                  "twitter:label2": "Tiempo de lectura",
+                  "og:image:type": "image/jpeg",
+                  "msapplication-tileimage": "https://www.incluyeme.com/wp-content/uploads/2023/07/cropped-faviconsinfondo-270x270.png",
+                  "og:description": "Conoce el proceso para tramitar la certificación de discapacidad en Colombia y accede a tus derechos. ¡Infórmate aquí!",
+                  "twitter:creator": "@incluyemecom",
+                  "article:publisher": "http://facebook.com/Incluyemecom",
+                  "twitter:data1": "admin",
+                  "twitter:data2": "5 minutos",
+                  "twitter:site": "@incluyemecom",
+                  "article:modified_time": "2025-01-10T17:10:24+00:00",
+                  "viewport": "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0",
+                  "og:locale": "es_ES",
+                  "og:url": "https://www.incluyeme.com/como-tramitar-la-certificacion-de-discapacidad-en-colombia/"
+                }
+              ],
+              "cse_image": [
+                {
+                  "src": "https://www.incluyeme.com/wp-content/uploads/2023/02/Accesibilidad.jpg"
+                }
+              ]
+            },
+            "labels": [
+              {
+                "name": "palabras_clave",
+                "displayName": "palabras_clave",
+                "label_with_op": "more:palabras_clave"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "analisis_ia": {
+    "ofertas de empleo en Barranquilla para personas con discapacidad visual": {
+      "analisis": [
+        {
+          "titulo": "Curso de operador de montacarga: Cómo hacerlo | Indeed.com",
+          "es_para_personas_con_discapacidad": false,
+          "informacion_relevante": {
+            "puesto": "Operador de montacarga",
+            "empresa": "No especificada",
+            "ubicacion": "No especificada",
+            "requisitos": "Aprobar el certificado para recibir licencia de operador de montacarga",
+            "tipo_de_discapacidad_aceptada": "No mencionada"
+          },
+          "clasificacion": {
+            "tipo_de_trabajo": "Operario",
+            "nivel_de_experiencia_requerido": "No especificado"
+          },
+          "recomendacion": "No parece específicamente diseñada para personas con discapacidad, pero la obtención de una licencia podría ser un paso valioso para la empleabilidad"
+        },
+        {
+          "titulo": "¿Cómo tramitar la Certificación de Discapacidad en Colombia ...",
+          "es_para_personas_con_discapacidad": true,
+          "informacion_relevante": {
+            "puesto": "No especificado",
+            "empresa": "Incluyeme.com",
+            "ubicacion": "Colombia",
+            "requisitos": "Tramitar la certificación de discapacidad",
+            "tipo_de_discapacidad_aceptada": "Diversas condiciones y habilidades"
+          },
+          "clasificacion": {
+            "tipo_de_trabajo": "No especificado",
+            "nivel_de_experiencia_requerido": "No especificado"
+          },
+          "recomendacion": "Parece más inclusiva y accesible, ya que está específicamente dirigida a personas con discapacidad y ofrece oportunidades laborales diversas"
+        }
+      ]
+    }
+  }
+}

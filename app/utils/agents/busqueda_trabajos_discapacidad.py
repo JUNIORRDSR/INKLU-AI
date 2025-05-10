@@ -2,11 +2,14 @@ import os
 import json
 import requests
 from datetime import datetime
-
+from langchain_core.tools import tool
+from dotenv import load_dotenv
+import os
+load_dotenv()
 # Claves API
-GOOGLE_API_KEY = "AIzaSyAOTe90o1H7mJAS5Yp5bqWWe7fprpMbw0A"
-GOOGLE_CSE_ID = "20376f21087844b39"
-DEEPSEEK_API_KEY = "sk-298c3047ada34bcfa3e7a1a3ad387d3a"
+GOOGLE_API_KEY =os.environ.get("GOOGLE_API_KEY")
+GOOGLE_CSE_ID = os.environ.get("GOOGLE_CSE_ID")
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
 
 def buscar_en_google(query, num=10):
     """
@@ -95,8 +98,14 @@ def analizar_con_deepseek_api(resultados_busqueda):
             print(f"Respuesta de error: {e.response.text}")
         return {"error": f"Error al analizar con DeepSeek API: {str(e)}"}
 
+@tool
 def main(Consulta: str) -> str: 
-    # Crear diferentes consultas para encontrar trabajos para personas con discapacidad
+    """función principal que busca informacion en la web actualizada sobre el año 2025 y analiza los resultados, tambien puede buscar en la web ofertas de trabajo para personas con discapacidad.
+    Esta función utiliza la API de Google para buscar información y la API de DeepSeek para analizar los resultados.
+    Args:
+        Consulta (str): La consulta de búsqueda del usuario.
+        Returns:
+            str: Resultados de la búsqueda y análisis."""
     
     consultas = [
         Consulta,
@@ -132,6 +141,7 @@ def main(Consulta: str) -> str:
     
     print("Resultados guardados en trabajos_discapacidad.json")
     print(json.dumps(resultado_final, ensure_ascii=False))
+    return json.dumps(resultado_final, ensure_ascii=False)
 
 if __name__ == "__main__":
     main('Buscar trabajos para personas con discapacidad')
